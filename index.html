@@ -22,6 +22,7 @@
   --violet: #bba4ff;
   --orange: #e29b61;
   --shadow: 0 22px 70px rgba(0, 0, 0, .38);
+  --title-gap: 40px;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 * { box-sizing: border-box; }
@@ -36,7 +37,7 @@ button, input { font: inherit; }
   height: min(820px, 86vh);
   min-height: 680px;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto var(--title-gap) minmax(0, 1fr);
   overflow: hidden;
   border-top: 1px solid var(--line);
   background:
@@ -63,6 +64,7 @@ h1 { margin: 0; font-size: clamp(25px, 3.2vw, 42px); line-height: 1.02; letter-s
 .hud p { max-width: 58rem; margin: 10px 0 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
 .hud .legend { margin-top: 12px; }
 canvas { width: 100%; height: 100%; min-height: 0; display: block; cursor: grab; }
+canvas { grid-row: 3; }
 canvas.dragging { cursor: grabbing; }
 .toolbar {
   position: absolute;
@@ -110,7 +112,7 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
   min-height: 0;
   border-left: 0;
   background: linear-gradient(180deg, var(--panel), var(--panel2));
-  overflow: visible;
+  overflow: clip;
   display: grid;
   grid-template-rows: auto auto auto;
 }
@@ -123,17 +125,18 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
 .stat span { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.2; }
 .controls {
   position: sticky;
-  top: 10px;
+  top: 0;
   z-index: 20;
   display: grid;
   gap: 10px;
-  margin: 10px 18px;
-  padding: 12px;
-  border: 1px solid rgba(255,255,255,.05);
+  margin: 0;
+  padding: 12px 18px;
+  border: 0;
   border-bottom: 1px solid var(--line);
   background: rgba(13, 16, 20, .97);
   backdrop-filter: blur(14px);
-  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
+  border-radius: 0;
 }
 .search { width: 100%; min-width: 0; outline: 0; }
 .pills, .button-row { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -172,6 +175,7 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
 .legend span { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); background: rgba(10,12,16,.48); border: 1px solid var(--line); border-radius: 999px; padding: 5px 8px; font-size: 11px; }
 .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--teal); }
 @media (max-width: 980px) {
+  :root { --title-gap: 56px; }
   .stage { min-height: 620px; height: 74vh; }
   .side { min-height: 0; }
   .hud .legend { display: none; }
@@ -257,6 +261,7 @@ const state = {
     y: 0,
     vx: 0,
     vy: 0,
+    drift: 0,
     searchBlob: [node.name, node.type, node.cluster, node.status, node.summary, node.detail].join(" ").toLowerCase()
   })),
   edges: graph.edges.map((edge) => ({...edge})),
@@ -272,7 +277,8 @@ const state = {
   dragNode: null,
   dragStart: null,
   visibleKey: "",
-  visibleIds: null
+  visibleIds: null,
+  tick: 0
 };
 state.nodeById = new Map(state.nodes.map((node) => [node.id, node]));
 for (const edge of state.edges) {
@@ -309,6 +315,7 @@ function seedLayout() {
     node.y = cy + Math.sin(angle) * ring * .82 * typeBoost + ((index * 31) % 97) - 48;
     node.vx = 0;
     node.vy = 0;
+    node.drift = ((index * 37) % 360) * Math.PI / 180;
   });
   fitGraph();
 }
@@ -365,12 +372,16 @@ function nodeRadius(node) {
 }
 
 function step() {
+  state.tick += 1;
   const visible = state.nodes.filter(node => visibleIds().has(node.id));
   const center = screenToWorld(canvas.clientWidth / 2, canvas.clientHeight / 2);
 
   for (const node of visible) {
     node.vx += (center.x - node.x) * .0018;
     node.vy += (center.y - node.y) * .0018;
+    const drift = state.tick * .012 + node.drift;
+    node.vx += Math.cos(drift) * .012;
+    node.vy += Math.sin(drift * .87) * .012;
     if (state.selected?.id === node.id) {
       node.vx += (center.x - node.x) * .011;
       node.vy += (center.y - node.y) * .011;
@@ -385,7 +396,7 @@ function step() {
       let dy = b.y - a.y;
       const dist2 = dx * dx + dy * dy || .01;
       const dist = Math.sqrt(dist2);
-      const force = Math.min(2.8, 1850 / dist2);
+      const force = Math.min(2.6, 1700 / dist2);
       dx /= dist;
       dy /= dist;
       a.vx -= dx * force;
@@ -401,8 +412,8 @@ function step() {
     const dx = b.x - a.x;
     const dy = b.y - a.y;
     const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-    const target = edge.strength === "strong" ? 118 : edge.strength === "medium" ? 142 : 166;
-    const force = (dist - target) * (edge.strength === "strong" ? .011 : .008);
+    const target = edge.strength === "strong" ? 96 : edge.strength === "medium" ? 120 : 146;
+    const force = (dist - target) * .01;
     const fx = (dx / dist) * force;
     const fy = (dy / dist) * force;
     a.vx += fx;
@@ -421,8 +432,8 @@ function step() {
     if (node.x > bottomRight.x) node.vx -= (node.x - bottomRight.x) * .024;
     if (node.y < topLeft.y) node.vy += (topLeft.y - node.y) * .024;
     if (node.y > bottomRight.y) node.vy -= (node.y - bottomRight.y) * .024;
-    node.vx *= .86;
-    node.vy *= .86;
+    node.vx *= .9;
+    node.vy *= .9;
     node.x += node.vx;
     node.y += node.vy;
   }

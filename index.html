@@ -163,11 +163,80 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
 .list-head { padding: 12px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .list-head strong { font-size: 14px; }
 .list-head span { color: var(--muted); font-size: 12px; }
-.cards { min-height: 0; overflow: visible; padding: 12px 18px 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-content: start; gap: 10px; }
-.card { border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.045); border-radius: 8px; padding: 12px; }
-.card h3 { margin: 0 0 6px; font-size: 15px; line-height: 1.25; }
-.card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.4; }
-.card footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 11px; }
+.cards { min-height: 0; overflow: visible; padding: 12px 18px 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-content: start; gap: 12px; }
+.card {
+  min-height: 238px;
+  border: 0;
+  background: transparent;
+  border-radius: 8px;
+  padding: 0;
+  cursor: pointer;
+  perspective: 1400px;
+}
+.card:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+.card.is-flipped { grid-column: span 2; min-height: 292px; }
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  border-radius: 8px;
+  transform-style: preserve-3d;
+  transition: transform .52s cubic-bezier(.2, .72, .18, 1), min-height .24s ease;
+}
+.card.is-flipped .card-inner { transform: rotateY(180deg); }
+.card-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  background: rgba(255,255,255,.045);
+  backface-visibility: hidden;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .24);
+}
+.card-front { background: #090c0f; }
+.card-front img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.88) contrast(1.04);
+  transform: scale(1.02);
+}
+.card-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(7, 9, 12, .08), rgba(7, 9, 12, .72)),
+    radial-gradient(circle at 18% 12%, rgba(115, 214, 210, .14), transparent 34%);
+}
+.card-front-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 13px;
+}
+.card-front h3 { margin: 0; max-width: 14rem; font-size: 18px; line-height: 1.08; text-shadow: 0 2px 16px rgba(0,0,0,.78); }
+.card-hint { align-self: flex-start; color: rgba(244,239,231,.78); font-size: 12px; font-weight: 800; }
+.card-back {
+  transform: rotateY(180deg);
+  padding: 15px;
+  background:
+    radial-gradient(circle at 88% 10%, rgba(227, 189, 103, .13), transparent 34%),
+    linear-gradient(145deg, rgba(23, 27, 31, .98), rgba(11, 13, 17, .98));
+}
+.card-back h3 { margin: 7px 0 8px; font-size: 19px; line-height: 1.14; }
+.card-back p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.card-back footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; color: var(--muted); font-size: 12px; }
 .badge { color: var(--gold); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 .open { color: var(--teal); text-decoration: none; font-size: 13px; font-weight: 800; white-space: nowrap; }
 .open.disabled { color: var(--muted); pointer-events: none; }
@@ -187,6 +256,9 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
   .toolbar { left: 10px; right: 10px; bottom: 10px; max-width: none; }
   .selected-panel { display: none !important; }
   .stats { grid-template-columns: repeat(2, 1fr); }
+  .cards { grid-template-columns: 1fr; }
+  .card, .card.is-flipped { grid-column: auto; min-height: 244px; }
+  .card.is-flipped { min-height: 308px; }
 }
 </style>
 </head>
@@ -278,7 +350,8 @@ const state = {
   dragStart: null,
   visibleKey: "",
   visibleIds: null,
-  tick: 0
+  tick: 0,
+  flippedCards: new Set()
 };
 state.nodeById = new Map(state.nodes.map((node) => [node.id, node]));
 for (const edge of state.edges) {
@@ -509,13 +582,71 @@ function renderCards() {
   const nodes = state.nodes.filter(node => ids.has(node.id) && node.type !== "portal");
   nodes.forEach(node => {
     const card = document.createElement("article");
-    card.className = "card";
+    const flipped = state.flippedCards.has(node.id);
+    card.className = `card ${flipped ? "is-flipped" : ""}`;
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-pressed", flipped ? "true" : "false");
+    card.setAttribute("aria-label", `${node.name}. ${flipped ? "Text visible" : "Click to show text"}`);
     const url = node.url || "";
-    card.innerHTML = `<div class="badge">${labels[node.type] || node.type} / ${node.status}</div><h3>${node.name}</h3><p>${node.summary}</p><footer><span>${node.cluster}</span><a class="open ${url ? "" : "disabled"}" href="${url || "#"}">${url ? "Open" : "Blank"}</a></footer>`;
-    card.addEventListener("click", () => selectNode(node.id));
+    const image = cardImage(node);
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <img src="${image.src}" alt="${image.alt}">
+          <div class="card-front-content">
+            <div class="badge">${labels[node.type] || node.type} / ${node.status}</div>
+            <div>
+              <h3>${escapeHtml(node.name)}</h3>
+              <span class="card-hint">Click for text</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-face card-back">
+          <div>
+            <div class="badge">${labels[node.type] || node.type} / ${node.status}</div>
+            <h3>${escapeHtml(node.name)}</h3>
+            <p>${escapeHtml(node.summary)}</p>
+          </div>
+          <footer><span>${escapeHtml(node.cluster)}</span><a class="open ${url ? "" : "disabled"}" href="${url || "#"}" ${url ? 'target="_blank" rel="noopener noreferrer"' : ""}>${url ? "Open" : "Blank"}</a></footer>
+        </div>
+      </div>`;
+    card.addEventListener("click", event => {
+      if (event.target.closest("a")) return;
+      state.flippedCards.has(node.id) ? state.flippedCards.delete(node.id) : state.flippedCards.add(node.id);
+      selectNode(node.id);
+    });
+    card.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      state.flippedCards.has(node.id) ? state.flippedCards.delete(node.id) : state.flippedCards.add(node.id);
+      selectNode(node.id);
+    });
     cards.appendChild(card);
   });
   document.getElementById("shownCount").textContent = `${nodes.length} shown`;
+}
+
+function cardImage(node) {
+  const key = [node.id, node.cluster, node.name, node.type].join(" ").toLowerCase();
+  if (key.includes("tinyfish")) return {src: "assets/card-images/tinyfish.jpg", alt: "Brass fish compass moving through translucent research cards"};
+  if (key.includes("language")) return {src: "assets/card-images/language.jpg", alt: "Books, index cards, and a fountain pen on a dark desk"};
+  if (key.includes("book")) return {src: "assets/card-images/books.jpg", alt: "Classic hardbound books under a brass reading lamp"};
+  if (key.includes("headline")) return {src: "assets/card-images/headlines.jpg", alt: "Newspaper clippings, clipboard, and magnifying glass"};
+  if (key.includes("call") || key.includes("whatsapp") || key.includes("stream")) return {src: "assets/card-images/calls.jpg", alt: "Vintage microphone, notebook, and warm waveform light"};
+  if (key.includes("asset") || key.includes("drive")) return {src: "assets/card-images/assets.jpg", alt: "Organized folders, envelopes, photo contact sheets, and cloud light"};
+  if (node.type === "protocol" || node.type === "next_action") return {src: "assets/card-images/tinyfish.jpg", alt: "Brass compass fish among floating source cards"};
+  return {src: "assets/card-images/assets.jpg", alt: "Elegant archive folders and visual source materials"};
+}
+
+function escapeHtml(value) {
+  return String(value || "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[char]));
 }
 
 function renderSelected() {

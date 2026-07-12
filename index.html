@@ -120,12 +120,40 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
 .stat { min-height: 62px; padding: 10px; border: 1px solid rgba(255,255,255,.065); background: rgba(255,255,255,.045); border-radius: 8px; overflow: hidden; }
 .stat strong { display: block; font-size: 18px; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .stat span { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.2; }
-.controls { display: grid; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  gap: 10px;
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255,255,255,.05);
+  border-bottom: 1px solid var(--line);
+  background: rgba(13, 16, 20, .94);
+  backdrop-filter: blur(14px);
+}
 .search { width: 100%; min-width: 0; outline: 0; }
 .pills, .button-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { min-height: 34px; padding: 7px 10px; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; }
 .chip.seeded { color: var(--gold); }
 .chip.live { color: var(--green); }
+.drive-cta {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(227, 189, 103, .74);
+  background: rgba(82, 61, 24, .56);
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 900;
+}
+.drive-cta:hover { border-color: var(--gold); background: rgba(104, 76, 26, .72); }
 .list-head { padding: 12px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .list-head strong { font-size: 14px; }
 .list-head span { color: var(--muted); font-size: 12px; }
@@ -157,7 +185,7 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
 </head>
 <body>
 <div class="app">
-  <section class="stage" aria-label="Interactive graph">
+  <section class="stage" id="graph-section" aria-label="Interactive graph">
     <div class="hud">
       <p class="eyebrow">Jim x Thi / public working portal</p>
       <h1>Topic map first. Content as it earns its place.</h1>
@@ -185,6 +213,7 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
       </div>
     </div>
     <div class="controls">
+      <a class="drive-cta" href="https://drive.google.com/drive/folders/1ov0Qw1XW05i3WGFi3xrAD0k_WXZH7z3O">Open Google Drive Assets</a>
       <input class="search" id="search" type="search" placeholder="Search nodes, artifacts, topics">
       <div class="pills" id="navPills"></div>
       <div class="button-row" id="typeButtons"></div>

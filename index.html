@@ -61,6 +61,7 @@ button, input { font: inherit; }
 .eyebrow { margin: 0 0 8px; color: var(--teal); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; }
 h1 { margin: 0; font-size: clamp(25px, 3.2vw, 42px); line-height: 1.02; letter-spacing: 0; }
 .hud p { max-width: 58rem; margin: 10px 0 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+.hud .legend { margin-top: 12px; }
 canvas { width: 100%; height: 100%; min-height: 0; display: block; cursor: grab; }
 canvas.dragging { cursor: grabbing; }
 .toolbar {
@@ -122,15 +123,17 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
 .stat span { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.2; }
 .controls {
   position: sticky;
-  top: 0;
+  top: 10px;
   z-index: 20;
   display: grid;
   gap: 10px;
-  padding: 12px 18px;
-  border-top: 1px solid rgba(255,255,255,.05);
+  margin: 10px 18px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.05);
   border-bottom: 1px solid var(--line);
-  background: rgba(13, 16, 20, .94);
+  background: rgba(13, 16, 20, .97);
   backdrop-filter: blur(14px);
+  border-radius: 8px;
 }
 .search { width: 100%; min-width: 0; outline: 0; }
 .pills, .button-row { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -165,13 +168,13 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
 .badge { color: var(--gold); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 .open { color: var(--teal); text-decoration: none; font-size: 13px; font-weight: 800; white-space: nowrap; }
 .open.disabled { color: var(--muted); pointer-events: none; }
-.legend { position: absolute; left: 18px; top: 132px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 2; max-width: calc(100% - 36px); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; z-index: 2; max-width: 100%; }
 .legend span { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); background: rgba(10,12,16,.48); border: 1px solid var(--line); border-radius: 999px; padding: 5px 8px; font-size: 11px; }
 .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--teal); }
 @media (max-width: 980px) {
   .stage { min-height: 620px; height: 74vh; }
   .side { min-height: 0; }
-  .legend { display: none; }
+  .hud .legend { display: none; }
 }
 @media (max-width: 560px) {
   .stage { min-height: 560px; }
@@ -190,8 +193,8 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
       <p class="eyebrow">Jim x Thi / public working portal</p>
       <h1>Topic map first. Content as it earns its place.</h1>
       <p>Start state is intentionally light: TinyFish material, shared assets, and blank topic pills for Language, Books, Headlines, and Calls.</p>
+      <div class="legend" id="legend"></div>
     </div>
-    <div class="legend" id="legend"></div>
     <canvas id="graph" aria-label="Interactive portal graph"></canvas>
     <div class="toolbar">
       <button type="button" id="fitBtn">Fit</button>
@@ -227,7 +230,6 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
 const graph = window.JIM_THI_PORTAL_UNIVERSE;
 const canvas = document.getElementById("graph");
 const ctx = canvas.getContext("2d");
-const nodeById = new Map(graph.nodes.map(node => [node.id, node]));
 const colors = {
   portal: "#f4efe7",
   nav_pill: "#73d6d2",
@@ -246,52 +248,74 @@ const labels = {
   protocol: "Protocol",
   next_action: "Actions"
 };
-let selectedId = "portal";
-let typeFilter = "all";
-let depth = 1;
-let scale = 1;
-let offset = {x: 0, y: 0};
-let dragging = false;
-let dragStart = {x: 0, y: 0};
-let dragOffset = {x: 0, y: 0};
-let hoverId = null;
-const positions = new Map();
+const state = {
+  nodes: graph.nodes.map((node) => ({
+    ...node,
+    displayName: node.name,
+    degree: 0,
+    x: 0,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    searchBlob: [node.name, node.type, node.cluster, node.status, node.summary, node.detail].join(" ").toLowerCase()
+  })),
+  edges: graph.edges.map((edge) => ({...edge})),
+  nodeById: new Map(),
+  selected: null,
+  hover: null,
+  typeFilter: "all",
+  depth: 1,
+  scale: 1,
+  offsetX: 0,
+  offsetY: 0,
+  dragging: false,
+  dragNode: null,
+  dragStart: null,
+  visibleKey: "",
+  visibleIds: null
+};
+state.nodeById = new Map(state.nodes.map((node) => [node.id, node]));
+for (const edge of state.edges) {
+  edge.sourceNode = state.nodeById.get(edge.source);
+  edge.targetNode = state.nodeById.get(edge.target);
+  if (edge.sourceNode && edge.targetNode) {
+    edge.sourceNode.degree += 1;
+    edge.targetNode.degree += 1;
+  }
+}
+state.edges = state.edges.filter((edge) => edge.sourceNode && edge.targetNode);
+state.selected = state.nodeById.get("portal") || state.nodes[0] || null;
 
-function graphSize() {
+function resizeCanvas() {
   const rect = canvas.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
   canvas.width = Math.max(1, Math.floor(rect.width * dpr));
   canvas.height = Math.max(1, Math.floor(rect.height * dpr));
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  return {w: rect.width, h: rect.height};
 }
 
-function seedPositions() {
-  const pills = graph.nodes.filter(node => node.type === "nav_pill");
-  const artifacts = graph.nodes.filter(node => node.type === "artifact");
-  const streams = graph.nodes.filter(node => node.type === "source_stream");
-  positions.set("portal", {x: 0, y: 0});
-  pills.forEach((node, index) => {
-    const angle = (Math.PI * 2 * index / pills.length) - Math.PI / 2;
-    positions.set(node.id, {x: Math.cos(angle) * 310, y: Math.sin(angle) * 230});
+function seedLayout() {
+  const rect = canvas.getBoundingClientRect();
+  const clusters = [...new Set(state.nodes.map((node) => node.cluster))];
+  const clusterIndex = new Map(clusters.map((cluster, index) => [cluster, index]));
+  const cx = Math.max(320, rect.width / 2);
+  const cy = Math.max(270, rect.height / 2);
+  const ring = Math.max(190, Math.min(rect.width, rect.height) * .34);
+  state.nodes.forEach((node, index) => {
+    const ci = clusterIndex.get(node.cluster) || 0;
+    const angle = (ci / Math.max(1, clusters.length)) * Math.PI * 2 + (index % 5) * .16;
+    const typeBoost = node.type === "artifact" ? 1.25 : node.type === "source_stream" ? 1.16 : node.type === "asset_folder" ? 1.32 : 1;
+    node.x = cx + Math.cos(angle) * ring * typeBoost + ((index * 41) % 113) - 56;
+    node.y = cy + Math.sin(angle) * ring * .82 * typeBoost + ((index * 31) % 97) - 48;
+    node.vx = 0;
+    node.vy = 0;
   });
-  artifacts.forEach((node, index) => {
-    const parent = graph.edges.find(edge => edge.target === node.id)?.source;
-    const base = positions.get(parent) || {x: 0, y: 0};
-    positions.set(node.id, {x: base.x + 125, y: base.y + (index % 2 ? 76 : -76)});
-  });
-  streams.forEach((node, index) => positions.set(node.id, {x: -400, y: -110 + index * 130}));
-  const asset = graph.nodes.find(node => node.type === "asset_folder");
-  if (asset) positions.set(asset.id, {x: 430, y: 130});
-  const protocol = graph.nodes.find(node => node.type === "protocol");
-  if (protocol) positions.set(protocol.id, {x: -360, y: 205});
-  const action = graph.nodes.find(node => node.type === "next_action");
-  if (action) positions.set(action.id, {x: 40, y: 315});
+  fitGraph();
 }
 
 function neighbors(id) {
   const out = new Set([id]);
-  graph.edges.forEach(edge => {
+  state.edges.forEach(edge => {
     if (edge.source === id) out.add(edge.target);
     if (edge.target === id) out.add(edge.source);
   });
@@ -299,78 +323,179 @@ function neighbors(id) {
 }
 
 function visibleIds() {
+  const selectedId = state.selected?.id || "portal";
   const q = document.getElementById("search").value.trim().toLowerCase();
+  const key = [selectedId, state.depth, state.typeFilter, q].join("::");
+  if (state.visibleKey === key && state.visibleIds) return state.visibleIds;
   let ids = new Set([selectedId]);
-  for (let i = 0; i < depth; i++) {
+  for (let i = 0; i < state.depth; i++) {
     const next = new Set(ids);
     ids.forEach(id => neighbors(id).forEach(item => next.add(item)));
     ids = next;
   }
-  if (depth >= 99 || selectedId === "all") ids = new Set(graph.nodes.map(node => node.id));
-  graph.nodes.forEach(node => {
-    const text = [node.name, node.type, node.cluster, node.status, node.summary, node.detail].join(" ").toLowerCase();
-    if (q && text.includes(q)) ids.add(node.id);
+  if (state.depth >= 99) ids = new Set(state.nodes.map(node => node.id));
+  state.nodes.forEach(node => {
+    if (q && node.searchBlob.includes(q)) ids.add(node.id);
   });
-  return new Set([...ids].filter(id => {
-    const node = nodeById.get(id);
+  state.visibleIds = new Set([...ids].filter(id => {
+    const node = state.nodeById.get(id);
     if (!node) return false;
-    return typeFilter === "all" || node.type === typeFilter;
+    return state.typeFilter === "all" || node.type === state.typeFilter;
   }));
+  state.visibleKey = key;
+  return state.visibleIds;
 }
 
-function worldToScreen(point, size) {
-  return {x: size.w / 2 + (point.x + offset.x) * scale, y: size.h / 2 + (point.y + offset.y) * scale};
+function visibleEdges() {
+  const ids = visibleIds();
+  return state.edges.filter(edge => ids.has(edge.source) && ids.has(edge.target));
 }
 
-function screenToWorld(x, y, size) {
-  return {x: (x - size.w / 2) / scale - offset.x, y: (y - size.h / 2) / scale - offset.y};
+function worldToScreen(node) {
+  return {x: node.x * state.scale + state.offsetX, y: node.y * state.scale + state.offsetY};
+}
+
+function screenToWorld(x, y) {
+  return {x: (x - state.offsetX) / state.scale, y: (y - state.offsetY) / state.scale};
+}
+
+function nodeRadius(node) {
+  const base = node.type === "portal" ? 10 : node.type === "nav_pill" ? 8 : node.type === "artifact" ? 7 : 6;
+  return base + Math.min(10, Math.sqrt(node.degree || 1) * 2.3);
+}
+
+function step() {
+  const visible = state.nodes.filter(node => visibleIds().has(node.id));
+  const center = screenToWorld(canvas.clientWidth / 2, canvas.clientHeight / 2);
+
+  for (const node of visible) {
+    node.vx += (center.x - node.x) * .0018;
+    node.vy += (center.y - node.y) * .0018;
+    if (state.selected?.id === node.id) {
+      node.vx += (center.x - node.x) * .011;
+      node.vy += (center.y - node.y) * .011;
+    }
+  }
+
+  for (let i = 0; i < visible.length; i += 1) {
+    for (let j = i + 1; j < visible.length; j += 1) {
+      const a = visible[i];
+      const b = visible[j];
+      let dx = b.x - a.x;
+      let dy = b.y - a.y;
+      const dist2 = dx * dx + dy * dy || .01;
+      const dist = Math.sqrt(dist2);
+      const force = Math.min(2.8, 1850 / dist2);
+      dx /= dist;
+      dy /= dist;
+      a.vx -= dx * force;
+      a.vy -= dy * force;
+      b.vx += dx * force;
+      b.vy += dy * force;
+    }
+  }
+
+  for (const edge of visibleEdges()) {
+    const a = edge.sourceNode;
+    const b = edge.targetNode;
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const target = edge.strength === "strong" ? 118 : edge.strength === "medium" ? 142 : 166;
+    const force = (dist - target) * (edge.strength === "strong" ? .011 : .008);
+    const fx = (dx / dist) * force;
+    const fy = (dy / dist) * force;
+    a.vx += fx;
+    a.vy += fy;
+    b.vx -= fx;
+    b.vy -= fy;
+  }
+
+  const edgePad = canvas.clientWidth < 560 ? 58 : 130;
+  const topPad = canvas.clientWidth < 560 ? 84 : 110;
+  const topLeft = screenToWorld(edgePad, topPad);
+  const bottomRight = screenToWorld(canvas.clientWidth - edgePad, canvas.clientHeight - edgePad);
+  for (const node of visible) {
+    if (state.dragNode === node) continue;
+    if (node.x < topLeft.x) node.vx += (topLeft.x - node.x) * .024;
+    if (node.x > bottomRight.x) node.vx -= (node.x - bottomRight.x) * .024;
+    if (node.y < topLeft.y) node.vy += (topLeft.y - node.y) * .024;
+    if (node.y > bottomRight.y) node.vy -= (node.y - bottomRight.y) * .024;
+    node.vx *= .86;
+    node.vy *= .86;
+    node.x += node.vx;
+    node.y += node.vy;
+  }
+
+  draw();
+  requestAnimationFrame(step);
 }
 
 function draw() {
-  const size = graphSize();
-  ctx.clearRect(0, 0, size.w, size.h);
+  ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
   const ids = visibleIds();
-  const visibleEdges = graph.edges.filter(edge => ids.has(edge.source) && ids.has(edge.target));
+  const edges = visibleEdges();
+  const selectedNeighbors = new Set();
+  if (state.selected) {
+    edges.forEach(edge => {
+      if (edge.source === state.selected.id) selectedNeighbors.add(edge.target);
+      if (edge.target === state.selected.id) selectedNeighbors.add(edge.source);
+    });
+  }
   ctx.lineCap = "round";
-  visibleEdges.forEach(edge => {
-    const a = worldToScreen(positions.get(edge.source), size);
-    const b = worldToScreen(positions.get(edge.target), size);
+  edges.forEach(edge => {
+    const a = worldToScreen(edge.sourceNode);
+    const b = worldToScreen(edge.targetNode);
+    const selectedEdge = state.selected && (edge.source === state.selected.id || edge.target === state.selected.id);
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
     ctx.lineTo(b.x, b.y);
-    ctx.strokeStyle = edge.strength === "strong" ? "rgba(115,214,210,.48)" : "rgba(244,239,231,.18)";
-    ctx.lineWidth = edge.strength === "strong" ? 2.4 : 1.2;
+    ctx.strokeStyle = selectedEdge ? "rgba(227,189,103,.82)" : edge.strength === "strong" ? "rgba(115,214,210,.48)" : "rgba(244,239,231,.18)";
+    ctx.globalAlpha = state.selected && !selectedEdge ? .28 : .82;
+    ctx.lineWidth = selectedEdge ? 2.5 : edge.strength === "strong" ? 2 : 1.1;
     ctx.stroke();
   });
+  ctx.globalAlpha = 1;
   [...ids].forEach(id => {
-    const node = nodeById.get(id);
-    const pos = worldToScreen(positions.get(id), size);
-    const radius = node.type === "portal" ? 22 : node.type === "nav_pill" ? 17 : 12;
+    const node = state.nodeById.get(id);
+    const pos = worldToScreen(node);
+    const radius = nodeRadius(node) * state.scale;
+    const selected = state.selected?.id === id;
+    const neighbor = selectedNeighbors.has(id);
+    const dim = state.selected && !selected && !neighbor;
     ctx.beginPath();
     ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
     ctx.fillStyle = colors[node.type] || "#b8aa9a";
-    ctx.globalAlpha = id === hoverId || id === selectedId ? 1 : .88;
+    ctx.globalAlpha = selected || state.hover?.id === id ? 1 : dim ? .24 : .86;
     ctx.fill();
     ctx.globalAlpha = 1;
-    ctx.strokeStyle = "rgba(255,255,255,.88)";
-    ctx.lineWidth = id === selectedId ? 3 : 1.5;
+    ctx.strokeStyle = selected ? "#ffffff" : "rgba(255,255,255,.66)";
+    ctx.lineWidth = selected ? 2.8 : 1.3;
     ctx.stroke();
-    ctx.font = id === selectedId ? "700 13px Inter, system-ui" : "12px Inter, system-ui";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "#f4efe7";
-    ctx.shadowColor = "rgba(0,0,0,.9)";
-    ctx.shadowBlur = 6;
-    const label = node.name.length > 26 ? node.name.slice(0, 25) + "..." : node.name;
-    ctx.fillText(label, pos.x + radius + 8, pos.y);
-    ctx.shadowBlur = 0;
+    const narrow = canvas.clientWidth < 560;
+    const lowDensity = ids.size <= (narrow ? 24 : 58);
+    const shouldLabel = selected || neighbor || lowDensity || node.degree > (narrow ? 5 : 3);
+    if (shouldLabel) {
+      ctx.font = selected ? "800 13px Inter, system-ui" : "650 11px Inter, system-ui";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = selected ? "#ffffff" : colors[node.type] || "#f4efe7";
+      ctx.shadowColor = "rgba(0,0,0,.92)";
+      ctx.shadowBlur = 7;
+      const label = node.displayName.length > 26 ? node.displayName.slice(0, 25) + "..." : node.displayName;
+      ctx.fillText(label, pos.x, pos.y - radius - 10);
+      ctx.shadowBlur = 0;
+    }
   });
+  document.getElementById("nodeCount").textContent = ids.size;
+  document.getElementById("edgeCount").textContent = edges.length;
 }
 
 function renderCards() {
   const ids = visibleIds();
   const cards = document.getElementById("cards");
   cards.innerHTML = "";
-  const nodes = graph.nodes.filter(node => ids.has(node.id) && node.type !== "portal");
+  const nodes = state.nodes.filter(node => ids.has(node.id) && node.type !== "portal");
   nodes.forEach(node => {
     const card = document.createElement("article");
     card.className = "card";
@@ -384,7 +509,7 @@ function renderCards() {
 
 function renderSelected() {
   const panel = document.getElementById("selectedPanel");
-  const node = nodeById.get(selectedId);
+  const node = state.selected;
   if (!node) { panel.classList.remove("show"); return; }
   panel.classList.add("show");
   panel.innerHTML = `<h2>${node.name}</h2><p>${node.detail || node.summary}</p>${node.url ? `<a href="${node.url}">Open ${node.type === "asset_folder" ? "Drive folder" : "artifact"}</a>` : ""}`;
@@ -393,10 +518,10 @@ function renderSelected() {
 function renderControls() {
   const pills = document.getElementById("navPills");
   pills.innerHTML = "";
-  graph.nodes.filter(node => node.type === "nav_pill").forEach(node => {
+  state.nodes.filter(node => node.type === "nav_pill").forEach(node => {
     const button = document.createElement("button");
     button.type = "button";
-    button.className = `chip ${node.status} ${selectedId === node.id ? "active" : ""}`;
+    button.className = `chip ${node.status} ${state.selected?.id === node.id ? "active" : ""}`;
     button.textContent = node.name;
     button.addEventListener("click", () => selectNode(node.id));
     pills.appendChild(button);
@@ -407,9 +532,9 @@ function renderControls() {
   types.forEach(type => {
     const button = document.createElement("button");
     button.type = "button";
-    button.className = typeFilter === type ? "active" : "";
+    button.className = state.typeFilter === type ? "active" : "";
     button.textContent = type === "all" ? "All" : labels[type];
-    button.addEventListener("click", () => { typeFilter = type; render(); });
+    button.addEventListener("click", () => { state.typeFilter = type; invalidate(); render(); });
     typeButtons.appendChild(button);
   });
   const legend = document.getElementById("legend");
@@ -417,85 +542,120 @@ function renderControls() {
 }
 
 function selectNode(id) {
-  selectedId = id;
+  state.selected = state.nodeById.get(id) || state.selected;
+  invalidate();
   render();
 }
 
+function invalidate() {
+  state.visibleKey = "";
+  state.visibleIds = null;
+}
+
 function render() {
-  document.getElementById("nodeCount").textContent = graph.summary.nodeCount;
-  document.getElementById("edgeCount").textContent = graph.summary.edgeCount;
-  document.getElementById("pillCount").textContent = graph.nodes.filter(node => node.type === "nav_pill").length;
+  document.getElementById("pillCount").textContent = state.nodes.filter(node => node.type === "nav_pill").length;
   document.getElementById("artifactCount").textContent = graph.summary.artifactCount;
   renderControls();
   renderSelected();
   renderCards();
-  draw();
 }
 
-function fit() {
-  scale = 1;
-  offset = {x: 0, y: 0};
-  draw();
+function fitGraph() {
+  const visible = state.nodes.filter(node => visibleIds().has(node.id));
+  if (!visible.length) return;
+  const xs = visible.map(node => node.x);
+  const ys = visible.map(node => node.y);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  const width = Math.max(1, maxX - minX);
+  const height = Math.max(1, maxY - minY);
+  const narrow = canvas.clientWidth < 560;
+  const pad = narrow ? 126 : 270;
+  const sx = (canvas.clientWidth - pad) / width;
+  const sy = (canvas.clientHeight - pad) / height;
+  state.scale = Math.max(.34, Math.min(1.8, Math.min(sx, sy)));
+  state.offsetX = canvas.clientWidth / 2 - ((minX + maxX) / 2) * state.scale;
+  state.offsetY = canvas.clientHeight / 2 - ((minY + maxY) / 2) * state.scale;
 }
 
-function pickNode(event) {
-  const size = graphSize();
-  const rect = canvas.getBoundingClientRect();
-  const point = screenToWorld(event.clientX - rect.left, event.clientY - rect.top, size);
+function nearestNode(x, y) {
+  const point = screenToWorld(x, y);
   let nearest = null;
   let nearestDistance = Infinity;
   visibleIds().forEach(id => {
-    const pos = positions.get(id);
-    const dx = pos.x - point.x;
-    const dy = pos.y - point.y;
+    const node = state.nodeById.get(id);
+    const dx = node.x - point.x;
+    const dy = node.y - point.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < nearestDistance) { nearest = id; nearestDistance = distance; }
+    if (distance < nearestDistance) { nearest = node; nearestDistance = distance; }
   });
-  return nearestDistance * scale < 30 ? nearest : null;
+  return nearestDistance < 32 / state.scale ? nearest : null;
 }
 
 canvas.addEventListener("mousedown", event => {
-  dragging = true;
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  const node = nearestNode(x, y);
+  state.dragging = true;
+  state.dragNode = node;
+  state.dragStart = {x, y, offsetX: state.offsetX, offsetY: state.offsetY};
   canvas.classList.add("dragging");
-  dragStart = {x: event.clientX, y: event.clientY};
-  dragOffset = {...offset};
+  if (node) selectNode(node.id);
 });
 window.addEventListener("mouseup", event => {
-  if (!dragging) return;
-  dragging = false;
+  if (!state.dragging) return;
+  state.dragging = false;
+  state.dragNode = null;
   canvas.classList.remove("dragging");
-  const moved = Math.abs(event.clientX - dragStart.x) + Math.abs(event.clientY - dragStart.y);
-  if (moved < 6) {
-    const picked = pickNode(event);
-    if (picked) selectNode(picked);
-  }
 });
 window.addEventListener("mousemove", event => {
-  if (dragging) {
-    offset = {x: dragOffset.x + (event.clientX - dragStart.x) / scale, y: dragOffset.y + (event.clientY - dragStart.y) / scale};
-    draw();
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  if (state.dragging) {
+    if (state.dragNode) {
+      const world = screenToWorld(x, y);
+      state.dragNode.x = world.x;
+      state.dragNode.y = world.y;
+      state.dragNode.vx = 0;
+      state.dragNode.vy = 0;
+    } else {
+      state.offsetX = state.dragStart.offsetX + x - state.dragStart.x;
+      state.offsetY = state.dragStart.offsetY + y - state.dragStart.y;
+    }
     return;
   }
-  hoverId = pickNode(event);
-  draw();
+  state.hover = nearestNode(x, y);
 });
 canvas.addEventListener("wheel", event => {
   event.preventDefault();
-  const next = Math.max(.48, Math.min(2.8, scale * (event.deltaY > 0 ? .9 : 1.1)));
-  scale = next;
-  draw();
+  const rect = canvas.getBoundingClientRect();
+  const before = screenToWorld(event.clientX - rect.left, event.clientY - rect.top);
+  const next = Math.max(.38, Math.min(2.8, state.scale * (event.deltaY > 0 ? .9 : 1.1)));
+  state.scale = next;
+  state.offsetX = event.clientX - rect.left - before.x * state.scale;
+  state.offsetY = event.clientY - rect.top - before.y * state.scale;
 }, {passive: false});
-document.getElementById("search").addEventListener("input", render);
-document.getElementById("fitBtn").addEventListener("click", fit);
+document.getElementById("search").addEventListener("input", () => { invalidate(); render(); });
+document.getElementById("fitBtn").addEventListener("click", fitGraph);
 document.querySelectorAll("[data-depth]").forEach(button => button.addEventListener("click", () => {
-  depth = Number(button.dataset.depth);
+  state.depth = Number(button.dataset.depth);
   document.querySelectorAll("[data-depth]").forEach(item => item.classList.toggle("active", item === button));
+  invalidate();
+  fitGraph();
   render();
 }));
-window.addEventListener("resize", draw);
-seedPositions();
-fit();
+window.addEventListener("resize", () => {
+  resizeCanvas();
+  fitGraph();
+});
+resizeCanvas();
+seedLayout();
 render();
+step();
 </script>
 </body>
 </html>

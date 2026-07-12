@@ -200,6 +200,19 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
   cursor: pointer;
   perspective: 1400px;
 }
+.card.is-topic-match .card-face {
+  border-color: rgba(115, 214, 210, .94);
+  box-shadow:
+    0 0 0 2px rgba(115, 214, 210, .42),
+    0 0 0 5px rgba(227, 189, 103, .18),
+    0 18px 44px rgba(0, 0, 0, .38);
+}
+.card.is-topic-match .card-front::after {
+  background:
+    linear-gradient(180deg, rgba(7, 9, 12, .03), rgba(7, 9, 12, .66)),
+    radial-gradient(circle at 18% 12%, rgba(115, 214, 210, .26), transparent 38%),
+    linear-gradient(135deg, rgba(115, 214, 210, .16), transparent 42%);
+}
 .card:hover .card-inner, .card:focus-visible .card-inner {
   transform: translateY(-2px);
   box-shadow: 0 18px 42px rgba(0, 0, 0, .36);
@@ -439,7 +452,8 @@ const state = {
   visibleKey: "",
   visibleIds: null,
   tick: 0,
-  activeCardId: null
+  activeCardId: null,
+  activePillId: null
 };
 state.nodeById = new Map(state.nodes.map((node) => [node.id, node]));
 for (const edge of state.edges) {
@@ -664,16 +678,21 @@ function draw() {
 }
 
 function renderCards() {
-  const ids = visibleIds();
   const cards = document.getElementById("cards");
   cards.innerHTML = "";
-  const nodes = state.nodes.filter(node => ids.has(node.id) && node.type !== "portal");
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  const nodes = state.nodes.filter(node => {
+    if (node.type === "portal") return false;
+    if (state.typeFilter !== "all" && node.type !== state.typeFilter) return false;
+    return !q || node.searchBlob.includes(q);
+  });
+  const highlightedIds = highlightedCardIds();
   if (state.activeCardId && !nodes.some(node => node.id === state.activeCardId)) {
     state.activeCardId = null;
   }
   nodes.forEach(node => {
     const card = document.createElement("article");
-    card.className = "card";
+    card.className = `card ${highlightedIds.has(node.id) ? "is-topic-match" : ""}`;
     card.tabIndex = 0;
     card.setAttribute("role", "button");
     card.setAttribute("aria-label", `Open ${node.name} card`);
@@ -704,6 +723,16 @@ function renderCards() {
   });
   document.getElementById("shownCount").textContent = `${nodes.length} shown`;
   renderCardDetail();
+}
+
+function highlightedCardIds() {
+  if (!state.activePillId) return new Set();
+  const ids = new Set([state.activePillId]);
+  state.edges.forEach(edge => {
+    if (edge.source === state.activePillId) ids.add(edge.target);
+    if (edge.target === state.activePillId) ids.add(edge.source);
+  });
+  return ids;
 }
 
 function openCardDetail(id) {
@@ -832,12 +861,18 @@ function renderSelected() {
 function renderControls() {
   const pills = document.getElementById("navPills");
   pills.innerHTML = "";
+  const allButton = document.createElement("button");
+  allButton.type = "button";
+  allButton.className = `chip ${state.activePillId ? "" : "active"}`;
+  allButton.textContent = "All";
+  allButton.addEventListener("click", clearPillSelection);
+  pills.appendChild(allButton);
   state.nodes.filter(node => node.type === "nav_pill").forEach(node => {
     const button = document.createElement("button");
     button.type = "button";
-    button.className = `chip ${node.status} ${state.selected?.id === node.id ? "active" : ""}`;
+    button.className = `chip ${node.status} ${state.activePillId === node.id ? "active" : ""}`;
     button.textContent = node.name;
-    button.addEventListener("click", () => selectNode(node.id));
+    button.addEventListener("click", () => selectPill(node.id));
     pills.appendChild(button);
   });
   const types = ["all", "nav_pill", "artifact", "source_stream", "asset_folder"];
@@ -857,6 +892,22 @@ function renderControls() {
 
 function selectNode(id) {
   state.selected = state.nodeById.get(id) || state.selected;
+  const node = state.nodeById.get(id);
+  state.activePillId = node?.type === "nav_pill" ? id : state.activePillId;
+  invalidate();
+  render();
+}
+
+function selectPill(id) {
+  state.activePillId = id;
+  state.selected = state.nodeById.get(id) || state.selected;
+  invalidate();
+  render();
+}
+
+function clearPillSelection() {
+  state.activePillId = null;
+  state.selected = state.nodeById.get("portal") || state.selected;
   invalidate();
   render();
 }

@@ -282,6 +282,7 @@ button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .6
   opacity: 1;
   pointer-events: auto;
   transform: rotateY(0);
+  cursor: pointer;
 }
 .card-detail-media {
   position: relative;
@@ -690,7 +691,10 @@ function renderCards() {
           </div>
         </div>
       </div>`;
-    card.addEventListener("click", () => openCardDetail(node.id));
+    card.addEventListener("click", event => {
+      event.stopPropagation();
+      openCardDetail(node.id);
+    });
     card.addEventListener("keydown", event => {
       if (event.key !== "Enter" && event.key !== " ") return;
       event.preventDefault();
@@ -951,6 +955,12 @@ canvas.addEventListener("wheel", event => {
 }, {passive: false});
 document.getElementById("search").addEventListener("input", () => { invalidate(); render(); });
 document.getElementById("fitBtn").addEventListener("click", fitGraph);
+document.getElementById("cardDeck").addEventListener("click", () => {
+  if (state.activeCardId) closeCardDetail();
+});
+window.addEventListener("keydown", event => {
+  if (event.key === "Escape" && state.activeCardId) closeCardDetail();
+});
 document.querySelectorAll("[data-depth]").forEach(button => button.addEventListener("click", () => {
   state.depth = Number(button.dataset.depth);
   document.querySelectorAll("[data-depth]").forEach(item => item.classList.toggle("active", item === button));

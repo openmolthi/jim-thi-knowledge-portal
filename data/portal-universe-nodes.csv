@@ -1,0 +1,16 @@
+id,name,type,cluster,status,summary,detail,url
+portal,Jim x Thi Portal,portal,Portal spine,public-v1,"Public GitHub Pages cockpit for shared summaries, artifacts, and topic clusters.",The portal is intentionally sparse at launch: it should grow from actual Jim/Thi work instead of pretending to be full.,
+protocol_parallel_graph,Parallel Graph Protocol,protocol,Portal spine,active,Every meaningful portal update also updates browser graph data and the Neo4j universe.,The graph is generated from structured JSON and pushed through an idempotent Cypher path.,
+assets_drive,Shared Drive Assets,asset_folder,Assets,live,"Google Drive drop zone for files, screenshots, transcripts, and visual assets.",Created under openmolthi@gmail.com and shared by link for editing.,https://drive.google.com/drive/folders/1ov0Qw1XW05i3WGFi3xrAD0k_WXZH7z3O
+stream_whatsapp,Group Chat,source_stream,Inputs,active,WhatsApp exchanges that can be distilled into portal items.,"Good for requests, corrections, hypotheses, and lightweight decisions.",
+stream_calls,Video Calls,source_stream,Inputs,planned,Call notes or transcripts that can become summary artifacts.,"Future call summaries should preserve date, participants, claims, decisions, and follow-ups.",
+pill_tinyfish,TinyFish,nav_pill,Working topics,seeded,The only seeded content cluster at launch.,Contains the existing founder demo and evidence carousel so Jim has something real to inspect immediately.,
+pill_language,Language,nav_pill,Working topics,blank,"Placeholder for language, phrasing, naming, rhetoric, and semantic work.","Use this when a conversation turns into wording, concepts, or distinctions.",
+pill_books,Books,nav_pill,Working topics,blank,"Placeholder for books, essays, reading notes, and literary source material.","Useful for Jim-facing reading, references, and book-derived summaries.",
+pill_headlines,Headlines,nav_pill,Working topics,blank,"Placeholder for current signals, news, and short headline scans.",Use this for lightweight observations before they become a deeper brief.,
+pill_calls,Calls,nav_pill,Working topics,blank,Placeholder for video-call notes and decisions.,Designed to become the landing area for call-derived summaries.,
+pill_assets,Assets,nav_pill,Working topics,live,Entry point to shared Drive materials.,Keeps files outside GitHub while the portal stays lightweight.,
+artifact_tinyfish_founder_demo,TinyFish Founder Demo,artifact,TinyFish,live,Founder-audience demo narrative with evidence cadence and enterprise payoff.,Copied into this GitHub Pages bundle so Jim does not need seedbox access.,tinyfish-founder-demo.html
+artifact_tinyfish_carousel,TinyFish Evidence Carousel,artifact,TinyFish,live,Carousel-style evidence ladder with screenshot receipt flow.,Copied into this GitHub Pages bundle so Jim does not need seedbox access.,tinyfish-weiss-carousel.html
+artifact_first_call_summary,First Call Summary,artifact,Calls,planned,Blank slot for the first video-call summary.,Promote when actual call notes or transcripts exist.,
+action_next_summary,Next Summary Slot,next_action,Execution,next,Add the first real post-launch summary under the right nav pill.,"Update portal-universe.json, rebuild artifacts, push Neo4j, and publish GitHub Pages.",

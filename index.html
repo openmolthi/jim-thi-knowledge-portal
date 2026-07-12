@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jim x Thi Portal</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0d1014;
+  --bg2: #14100f;
+  --panel: rgba(20, 23, 28, .92);
+  --panel2: rgba(12, 14, 18, .94);
+  --line: rgba(234, 226, 211, .18);
+  --text: #f4efe7;
+  --muted: #b8aa9a;
+  --teal: #73d6d2;
+  --gold: #e3bd67;
+  --rose: #df7b94;
+  --green: #8bd39b;
+  --blue: #91b9ff;
+  --violet: #bba4ff;
+  --orange: #e29b61;
+  --shadow: 0 22px 70px rgba(0, 0, 0, .38);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; overflow: hidden; background: var(--bg); color: var(--text); }
+button, input { font: inherit; }
+.app { width: 100%; height: 100vh; min-height: 690px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, 460px); }
+.stage {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 16% 12%, rgba(115, 214, 210, .14), transparent 30%),
+    radial-gradient(circle at 72% 24%, rgba(227, 189, 103, .12), transparent 28%),
+    linear-gradient(rgba(244, 239, 231, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 239, 231, .045) 1px, transparent 1px),
+    linear-gradient(135deg, var(--bg), var(--bg2));
+  background-size: auto, auto, 28px 28px, 28px 28px, auto;
+}
+.hud {
+  position: relative;
+  z-index: 2;
+  margin: 18px 18px 0;
+  padding: 17px 18px;
+  border: 1px solid var(--line);
+  background: rgba(10, 12, 16, .72);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  border-radius: 8px;
+}
+.eyebrow { margin: 0 0 8px; color: var(--teal); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; }
+h1 { margin: 0; font-size: clamp(25px, 3.2vw, 42px); line-height: 1.02; letter-spacing: 0; }
+.hud p { max-width: 58rem; margin: 10px 0 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+canvas { width: 100%; height: 100%; min-height: 0; display: block; cursor: grab; }
+canvas.dragging { cursor: grabbing; }
+.toolbar {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  z-index: 3;
+  max-width: calc(100% - 36px);
+}
+button, .chip, .search {
+  border: 1px solid var(--line);
+  background: rgba(13, 17, 23, .86);
+  color: var(--text);
+  min-height: 38px;
+  padding: 9px 12px;
+  font-size: 13px;
+  border-radius: 7px;
+}
+button, .chip { cursor: pointer; }
+button:hover, button.active, .chip.active { border-color: rgba(115, 214, 210, .62); background: rgba(28, 39, 45, .96); }
+.mode.active { color: var(--gold); border-color: rgba(227, 189, 103, .72); background: rgba(82, 61, 24, .42); }
+.selected-panel {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: min(430px, calc(100% - 36px));
+  padding: 14px;
+  background: rgba(10, 12, 16, .82);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  border-radius: 8px;
+  display: none;
+  z-index: 4;
+}
+.selected-panel.show { display: block; }
+.selected-panel h2 { margin: 0 0 8px; font-size: 18px; line-height: 1.15; }
+.selected-panel p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.42; }
+.selected-panel a { display: inline-flex; margin-top: 11px; color: var(--teal); text-decoration: none; font-weight: 800; font-size: 13px; }
+.side {
+  min-width: 0;
+  height: 100vh;
+  border-left: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--panel), var(--panel2));
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+}
+.side-head { padding: 18px 18px 12px; border-bottom: 1px solid var(--line); }
+.side-head h2 { margin: 0 0 11px; font-size: 19px; line-height: 1.15; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.stat { min-height: 62px; padding: 10px; border: 1px solid rgba(255,255,255,.065); background: rgba(255,255,255,.045); border-radius: 8px; overflow: hidden; }
+.stat strong { display: block; font-size: 18px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat span { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.2; }
+.controls { display: grid; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+.search { width: 100%; min-width: 0; outline: 0; }
+.pills, .button-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { min-height: 34px; padding: 7px 10px; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; }
+.chip.seeded { color: var(--gold); }
+.chip.live { color: var(--green); }
+.list-head { padding: 12px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.list-head strong { font-size: 14px; }
+.list-head span { color: var(--muted); font-size: 12px; }
+.cards { min-height: 0; overflow: auto; padding: 12px 18px 18px; display: grid; align-content: start; gap: 10px; }
+.card { border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.045); border-radius: 8px; padding: 12px; }
+.card h3 { margin: 0 0 6px; font-size: 15px; line-height: 1.25; }
+.card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.4; }
+.card footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 11px; }
+.badge { color: var(--gold); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.open { color: var(--teal); text-decoration: none; font-size: 13px; font-weight: 800; white-space: nowrap; }
+.open.disabled { color: var(--muted); pointer-events: none; }
+.legend { position: absolute; left: 18px; top: 132px; display: flex; flex-wrap: wrap; gap: 8px; z-index: 2; max-width: calc(100% - 36px); }
+.legend span { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); background: rgba(10,12,16,.48); border: 1px solid var(--line); border-radius: 999px; padding: 5px 8px; font-size: 11px; }
+.dot { width: 8px; height: 8px; border-radius: 99px; background: var(--teal); }
+@media (max-width: 980px) {
+  body { overflow: auto; }
+  .app { height: auto; min-height: 100vh; grid-template-columns: 1fr; }
+  .stage { min-height: 620px; }
+  .side { height: auto; min-height: 560px; border-left: 0; border-top: 1px solid var(--line); }
+  .legend { display: none; }
+}
+@media (max-width: 560px) {
+  .stage { min-height: 560px; }
+  .hud { margin: 10px; padding: 13px; }
+  .hud p { font-size: 13px; }
+  .toolbar { left: 10px; right: 10px; bottom: 10px; max-width: none; }
+  .selected-panel { display: none !important; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="stage" aria-label="Interactive graph">
+    <div class="hud">
+      <p class="eyebrow">Jim x Thi / public working portal</p>
+      <h1>Topic map first. Content as it earns its place.</h1>
+      <p>Start state is intentionally light: TinyFish material, shared assets, and blank topic pills for Language, Books, Headlines, and Calls.</p>
+    </div>
+    <div class="legend" id="legend"></div>
+    <canvas id="graph" aria-label="Interactive portal graph"></canvas>
+    <div class="toolbar">
+      <button type="button" id="fitBtn">Fit</button>
+      <button type="button" class="mode active" data-depth="1">+1 links</button>
+      <button type="button" class="mode" data-depth="2">+2 links</button>
+      <button type="button" class="mode" data-depth="99">All</button>
+    </div>
+    <aside class="selected-panel" id="selectedPanel"></aside>
+  </section>
+  <aside class="side">
+    <div class="side-head">
+      <h2>Portal Controls</h2>
+      <div class="stats">
+        <div class="stat"><strong id="nodeCount">0</strong><span>nodes</span></div>
+        <div class="stat"><strong id="edgeCount">0</strong><span>edges</span></div>
+        <div class="stat"><strong id="pillCount">0</strong><span>pills</span></div>
+        <div class="stat"><strong id="artifactCount">0</strong><span>artifacts</span></div>
+      </div>
+    </div>
+    <div class="controls">
+      <input class="search" id="search" type="search" placeholder="Search nodes, artifacts, topics">
+      <div class="pills" id="navPills"></div>
+      <div class="button-row" id="typeButtons"></div>
+    </div>
+    <div class="list-head"><strong>Current Cards</strong><span id="shownCount">0 shown</span></div>
+    <div class="cards" id="cards"></div>
+  </aside>
+</div>
+<script src="data/portal-universe.js"></script>
+<script>
+const graph = window.JIM_THI_PORTAL_UNIVERSE;
+const canvas = document.getElementById("graph");
+const ctx = canvas.getContext("2d");
+const nodeById = new Map(graph.nodes.map(node => [node.id, node]));
+const colors = {
+  portal: "#f4efe7",
+  nav_pill: "#73d6d2",
+  artifact: "#df7b94",
+  source_stream: "#8bd39b",
+  asset_folder: "#e3bd67",
+  protocol: "#bba4ff",
+  next_action: "#e29b61"
+};
+const labels = {
+  portal: "Portal",
+  nav_pill: "Pills",
+  artifact: "Artifacts",
+  source_stream: "Streams",
+  asset_folder: "Assets",
+  protocol: "Protocol",
+  next_action: "Actions"
+};
+let selectedId = "portal";
+let typeFilter = "all";
+let depth = 1;
+let scale = 1;
+let offset = {x: 0, y: 0};
+let dragging = false;
+let dragStart = {x: 0, y: 0};
+let dragOffset = {x: 0, y: 0};
+let hoverId = null;
+const positions = new Map();
+
+function graphSize() {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+  canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return {w: rect.width, h: rect.height};
+}
+
+function seedPositions() {
+  const pills = graph.nodes.filter(node => node.type === "nav_pill");
+  const artifacts = graph.nodes.filter(node => node.type === "artifact");
+  const streams = graph.nodes.filter(node => node.type === "source_stream");
+  positions.set("portal", {x: 0, y: 0});
+  pills.forEach((node, index) => {
+    const angle = (Math.PI * 2 * index / pills.length) - Math.PI / 2;
+    positions.set(node.id, {x: Math.cos(angle) * 310, y: Math.sin(angle) * 230});
+  });
+  artifacts.forEach((node, index) => {
+    const parent = graph.edges.find(edge => edge.target === node.id)?.source;
+    const base = positions.get(parent) || {x: 0, y: 0};
+    positions.set(node.id, {x: base.x + 125, y: base.y + (index % 2 ? 76 : -76)});
+  });
+  streams.forEach((node, index) => positions.set(node.id, {x: -400, y: -110 + index * 130}));
+  const asset = graph.nodes.find(node => node.type === "asset_folder");
+  if (asset) positions.set(asset.id, {x: 430, y: 130});
+  const protocol = graph.nodes.find(node => node.type === "protocol");
+  if (protocol) positions.set(protocol.id, {x: -360, y: 205});
+  const action = graph.nodes.find(node => node.type === "next_action");
+  if (action) positions.set(action.id, {x: 40, y: 315});
+}
+
+function neighbors(id) {
+  const out = new Set([id]);
+  graph.edges.forEach(edge => {
+    if (edge.source === id) out.add(edge.target);
+    if (edge.target === id) out.add(edge.source);
+  });
+  return out;
+}
+
+function visibleIds() {
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  let ids = new Set([selectedId]);
+  for (let i = 0; i < depth; i++) {
+    const next = new Set(ids);
+    ids.forEach(id => neighbors(id).forEach(item => next.add(item)));
+    ids = next;
+  }
+  if (depth >= 99 || selectedId === "all") ids = new Set(graph.nodes.map(node => node.id));
+  graph.nodes.forEach(node => {
+    const text = [node.name, node.type, node.cluster, node.status, node.summary, node.detail].join(" ").toLowerCase();
+    if (q && text.includes(q)) ids.add(node.id);
+  });
+  return new Set([...ids].filter(id => {
+    const node = nodeById.get(id);
+    if (!node) return false;
+    return typeFilter === "all" || node.type === typeFilter;
+  }));
+}
+
+function worldToScreen(point, size) {
+  return {x: size.w / 2 + (point.x + offset.x) * scale, y: size.h / 2 + (point.y + offset.y) * scale};
+}
+
+function screenToWorld(x, y, size) {
+  return {x: (x - size.w / 2) / scale - offset.x, y: (y - size.h / 2) / scale - offset.y};
+}
+
+function draw() {
+  const size = graphSize();
+  ctx.clearRect(0, 0, size.w, size.h);
+  const ids = visibleIds();
+  const visibleEdges = graph.edges.filter(edge => ids.has(edge.source) && ids.has(edge.target));
+  ctx.lineCap = "round";
+  visibleEdges.forEach(edge => {
+    const a = worldToScreen(positions.get(edge.source), size);
+    const b = worldToScreen(positions.get(edge.target), size);
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.strokeStyle = edge.strength === "strong" ? "rgba(115,214,210,.48)" : "rgba(244,239,231,.18)";
+    ctx.lineWidth = edge.strength === "strong" ? 2.4 : 1.2;
+    ctx.stroke();
+  });
+  [...ids].forEach(id => {
+    const node = nodeById.get(id);
+    const pos = worldToScreen(positions.get(id), size);
+    const radius = node.type === "portal" ? 22 : node.type === "nav_pill" ? 17 : 12;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+    ctx.fillStyle = colors[node.type] || "#b8aa9a";
+    ctx.globalAlpha = id === hoverId || id === selectedId ? 1 : .88;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = "rgba(255,255,255,.88)";
+    ctx.lineWidth = id === selectedId ? 3 : 1.5;
+    ctx.stroke();
+    ctx.font = id === selectedId ? "700 13px Inter, system-ui" : "12px Inter, system-ui";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#f4efe7";
+    ctx.shadowColor = "rgba(0,0,0,.9)";
+    ctx.shadowBlur = 6;
+    const label = node.name.length > 26 ? node.name.slice(0, 25) + "..." : node.name;
+    ctx.fillText(label, pos.x + radius + 8, pos.y);
+    ctx.shadowBlur = 0;
+  });
+}
+
+function renderCards() {
+  const ids = visibleIds();
+  const cards = document.getElementById("cards");
+  cards.innerHTML = "";
+  const nodes = graph.nodes.filter(node => ids.has(node.id) && node.type !== "portal");
+  nodes.forEach(node => {
+    const card = document.createElement("article");
+    card.className = "card";
+    const url = node.url || "";
+    card.innerHTML = `<div class="badge">${labels[node.type] || node.type} / ${node.status}</div><h3>${node.name}</h3><p>${node.summary}</p><footer><span>${node.cluster}</span><a class="open ${url ? "" : "disabled"}" href="${url || "#"}">${url ? "Open" : "Blank"}</a></footer>`;
+    card.addEventListener("click", () => selectNode(node.id));
+    cards.appendChild(card);
+  });
+  document.getElementById("shownCount").textContent = `${nodes.length} shown`;
+}
+
+function renderSelected() {
+  const panel = document.getElementById("selectedPanel");
+  const node = nodeById.get(selectedId);
+  if (!node) { panel.classList.remove("show"); return; }
+  panel.classList.add("show");
+  panel.innerHTML = `<h2>${node.name}</h2><p>${node.detail || node.summary}</p>${node.url ? `<a href="${node.url}">Open ${node.type === "asset_folder" ? "Drive folder" : "artifact"}</a>` : ""}`;
+}
+
+function renderControls() {
+  const pills = document.getElementById("navPills");
+  pills.innerHTML = "";
+  graph.nodes.filter(node => node.type === "nav_pill").forEach(node => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `chip ${node.status} ${selectedId === node.id ? "active" : ""}`;
+    button.textContent = node.name;
+    button.addEventListener("click", () => selectNode(node.id));
+    pills.appendChild(button);
+  });
+  const types = ["all", "nav_pill", "artifact", "source_stream", "asset_folder"];
+  const typeButtons = document.getElementById("typeButtons");
+  typeButtons.innerHTML = "";
+  types.forEach(type => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = typeFilter === type ? "active" : "";
+    button.textContent = type === "all" ? "All" : labels[type];
+    button.addEventListener("click", () => { typeFilter = type; render(); });
+    typeButtons.appendChild(button);
+  });
+  const legend = document.getElementById("legend");
+  legend.innerHTML = Object.entries(labels).map(([type, label]) => `<span><i class="dot" style="background:${colors[type] || "#b8aa9a"}"></i>${label}</span>`).join("");
+}
+
+function selectNode(id) {
+  selectedId = id;
+  render();
+}
+
+function render() {
+  document.getElementById("nodeCount").textContent = graph.summary.nodeCount;
+  document.getElementById("edgeCount").textContent = graph.summary.edgeCount;
+  document.getElementById("pillCount").textContent = graph.nodes.filter(node => node.type === "nav_pill").length;
+  document.getElementById("artifactCount").textContent = graph.summary.artifactCount;
+  renderControls();
+  renderSelected();
+  renderCards();
+  draw();
+}
+
+function fit() {
+  scale = 1;
+  offset = {x: 0, y: 0};
+  draw();
+}
+
+function pickNode(event) {
+  const size = graphSize();
+  const rect = canvas.getBoundingClientRect();
+  const point = screenToWorld(event.clientX - rect.left, event.clientY - rect.top, size);
+  let nearest = null;
+  let nearestDistance = Infinity;
+  visibleIds().forEach(id => {
+    const pos = positions.get(id);
+    const dx = pos.x - point.x;
+    const dy = pos.y - point.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < nearestDistance) { nearest = id; nearestDistance = distance; }
+  });
+  return nearestDistance * scale < 30 ? nearest : null;
+}
+
+canvas.addEventListener("mousedown", event => {
+  dragging = true;
+  canvas.classList.add("dragging");
+  dragStart = {x: event.clientX, y: event.clientY};
+  dragOffset = {...offset};
+});
+window.addEventListener("mouseup", event => {
+  if (!dragging) return;
+  dragging = false;
+  canvas.classList.remove("dragging");
+  const moved = Math.abs(event.clientX - dragStart.x) + Math.abs(event.clientY - dragStart.y);
+  if (moved < 6) {
+    const picked = pickNode(event);
+    if (picked) selectNode(picked);
+  }
+});
+window.addEventListener("mousemove", event => {
+  if (dragging) {
+    offset = {x: dragOffset.x + (event.clientX - dragStart.x) / scale, y: dragOffset.y + (event.clientY - dragStart.y) / scale};
+    draw();
+    return;
+  }
+  hoverId = pickNode(event);
+  draw();
+});
+canvas.addEventListener("wheel", event => {
+  event.preventDefault();
+  const next = Math.max(.48, Math.min(2.8, scale * (event.deltaY > 0 ? .9 : 1.1)));
+  scale = next;
+  draw();
+}, {passive: false});
+document.getElementById("search").addEventListener("input", render);
+document.getElementById("fitBtn").addEventListener("click", fit);
+document.querySelectorAll("[data-depth]").forEach(button => button.addEventListener("click", () => {
+  depth = Number(button.dataset.depth);
+  document.querySelectorAll("[data-depth]").forEach(item => item.classList.toggle("active", item === button));
+  render();
+}));
+window.addEventListener("resize", draw);
+seedPositions();
+fit();
+render();
+</script>
+</body>
+</html>

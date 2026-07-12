@@ -1,0 +1,16 @@
+id,source,target,type,strength,note
+e_portal_protocol,portal,protocol_parallel_graph,GOVERNS,strong,Standing rule for this portal.
+e_portal_tinyfish,portal,pill_tinyfish,HOSTS_PILL,strong,Seeded content pill.
+e_portal_language,portal,pill_language,HOSTS_PILL,medium,Generic blank-state pill.
+e_portal_books,portal,pill_books,HOSTS_PILL,medium,Generic blank-state pill.
+e_portal_headlines,portal,pill_headlines,HOSTS_PILL,medium,Generic blank-state pill.
+e_portal_calls,portal,pill_calls,HOSTS_PILL,medium,Generic blank-state pill.
+e_portal_assets,portal,pill_assets,HOSTS_PILL,strong,Drive assets pill.
+e_tinyfish_demo,pill_tinyfish,artifact_tinyfish_founder_demo,HAS_ARTIFACT,strong,Seeded TinyFish content.
+e_tinyfish_carousel,pill_tinyfish,artifact_tinyfish_carousel,HAS_ARTIFACT,strong,Seeded TinyFish content.
+e_calls_summary,pill_calls,artifact_first_call_summary,HAS_ARTIFACT,weak,Blank call summary slot.
+e_assets_drive,pill_assets,assets_drive,USES_ASSET_FOLDER,strong,Shared Drive folder.
+e_chat_to_language,pill_language,stream_whatsapp,HAS_SOURCE_STREAM,medium,Chat can generate language notes.
+e_calls_to_stream,pill_calls,stream_calls,HAS_SOURCE_STREAM,strong,Call summaries originate here.
+e_assets_stream,assets_drive,stream_calls,RELATES_TO,medium,Call assets can live in Drive.
+e_next_summary,portal,action_next_summary,NEXT_ACTION,strong,Next concrete operation.

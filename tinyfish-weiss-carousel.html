@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TinyFish Evidence Carousel | Weiss, McCabe, Stories</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111315;
+      --paper: #f4eee2;
+      --paper-2: #e9decd;
+      --ink: #151817;
+      --muted: #66706b;
+      --line: rgba(21, 24, 23, 0.16);
+      --cyan: #25b8bd;
+      --red: #d85a42;
+      --gold: #c69a43;
+      --green: #708a5d;
+      --night: #20282b;
+      --radius: 8px;
+      --shadow: 0 28px 84px rgba(0, 0, 0, 0.34);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        linear-gradient(90deg, rgba(37, 184, 189, 0.055) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(216, 90, 66, 0.04) 1px, transparent 1px),
+        var(--bg);
+      background-size: 54px 54px;
+      color: var(--paper);
+      letter-spacing: 0;
+    }
+
+    body { overflow: hidden; }
+
+    button,
+    a { font: inherit; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+
+    header,
+    footer {
+      padding-inline: clamp(18px, 4vw, 46px);
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding-top: 18px;
+      padding-bottom: 10px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+      flex: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: rgba(244, 238, 226, 0.62);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--paper);
+      font-size: clamp(1.05rem, 2vw, 1.42rem);
+      line-height: 1.1;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(244, 238, 226, 0.7);
+      font-size: 0.9rem;
+      min-width: 214px;
+    }
+
+    .meter {
+      width: 122px;
+      height: 6px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(244, 238, 226, 0.14);
+    }
+
+    .meter span {
+      display: block;
+      width: calc(var(--progress, 9) * 1%);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan), var(--gold), var(--red));
+      transition: width 220ms ease;
+    }
+
+    main {
+      min-height: 0;
+      padding: 8px clamp(14px, 4vw, 46px) 12px;
+    }
+
+    .deck {
+      position: relative;
+      height: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      overflow: hidden;
+      border: 1px solid rgba(244, 238, 226, 0.18);
+      border-radius: var(--radius);
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(340px, 1.1fr);
+      gap: clamp(20px, 4vw, 54px);
+      padding: clamp(24px, 5vw, 62px);
+      overflow: auto;
+      opacity: 0;
+      transform: translateX(28px);
+      pointer-events: none;
+      transition: opacity 240ms ease, transform 240ms ease;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .slide.visual-slide {
+      grid-template-columns: minmax(260px, 0.55fr) minmax(460px, 1.45fr);
+      gap: clamp(18px, 3vw, 34px);
+    }
+
+    .copy {
+      align-self: center;
+      max-width: 590px;
+    }
+
+    .kicker {
+      display: inline-grid;
+      grid-template-columns: auto auto;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 18px;
+      color: var(--red);
+      font-size: 0.76rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: currentColor;
+    }
+
+    h2 {
+      margin: 0;
+      max-width: 12ch;
+      font-size: clamp(2.35rem, 5.8vw, 5.25rem);
+      line-height: 0.94;
+      letter-spacing: 0;
+      font-weight: 880;
+    }
+
+    .copy p {
+      margin: 20px 0 0;
+      max-width: 58ch;
+      color: #343b38;
+      font-size: clamp(1rem, 1.7vw, 1.16rem);
+      line-height: 1.55;
+    }
+
+    .claim {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 28px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.48);
+      color: #29302d;
+      font-size: 0.94rem;
+      font-weight: 760;
+    }
+
+    .claim .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 4px rgba(37, 184, 189, 0.14);
+      flex: none;
+    }
+
+    .visual { align-self: center; min-width: 0; }
+
+    .browser,
+    .folio,
+    .map,
+    .matrix,
+    .closing,
+    .screenshot-frame {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 18px 44px rgba(21, 24, 23, 0.14);
+    }
+
+    .browser,
+    .folio,
+    .map,
+    .matrix { background: #fffaf0; }
+
+    .browser-bar {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #e6ded0;
+    }
+
+    .lights { display: flex; gap: 6px; }
+    .lights span { width: 10px; height: 10px; border-radius: 999px; background: var(--red); }
+    .lights span:nth-child(2) { background: var(--gold); }
+    .lights span:nth-child(3) { background: var(--green); }
+
+    .url {
+      overflow: hidden;
+      color: #58615d;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.83rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .badge {
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--night);
+      color: var(--paper);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .search-panel { padding: 22px; }
+
+    .query {
+      padding: 14px 16px;
+      border: 1px solid rgba(21, 24, 23, 0.14);
+      border-left: 4px solid var(--cyan);
+      border-radius: var(--radius);
+      background: #f7f3eb;
+      color: #29302e;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      line-height: 1.45;
+    }
+
+    .result {
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid rgba(21, 24, 23, 0.12);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .result strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.02rem;
+    }
+
+    .result p {
+      margin: 0;
+      color: #59605d;
+      line-height: 1.5;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .pill {
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f3eee4;
+      color: #2a2f2d;
+      font-size: 0.78rem;
+      font-weight: 780;
+      text-decoration: none;
+    }
+
+    .folio { padding: clamp(20px, 4vw, 34px); }
+
+    .folio-title {
+      display: grid;
+      gap: 5px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .folio-title span {
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .folio-title strong {
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      line-height: 1.15;
+    }
+
+    .quote-strip {
+      margin: 22px 0;
+      padding: 18px 20px;
+      border-left: 5px solid var(--red);
+      background: #f8f4ec;
+      font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+      line-height: 1.35;
+      font-weight: 820;
+    }
+
+    .source-lines { display: grid; gap: 10px; }
+
+    .line-item {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 10px;
+      color: #343b38;
+      line-height: 1.45;
+    }
+
+    .line-item::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      margin-top: 0.45em;
+      border-radius: 999px;
+      background: var(--cyan);
+    }
+
+    .map {
+      min-height: 420px;
+      display: grid;
+      align-content: center;
+      gap: 24px;
+      padding: 28px;
+      background:
+        radial-gradient(circle at top left, rgba(37, 184, 189, 0.12), transparent 28%),
+        #fffaf0;
+    }
+
+    .path {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .node {
+      min-height: 118px;
+      display: grid;
+      align-content: space-between;
+      padding: 14px;
+      border: 1px solid rgba(21, 24, 23, 0.14);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .node small {
+      color: var(--red);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .node strong {
+      font-size: 1.08rem;
+      line-height: 1.14;
+    }
+
+    .node span {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.3;
+    }
+
+    .pathline {
+      height: 5px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--cyan), var(--green), var(--gold), var(--red));
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .profile {
+      min-height: 390px;
+      padding: 24px;
+    }
+
+    .profile + .profile { border-left: 1px solid var(--line); }
+
+    .profile h3,
+    .source-card h3 {
+      margin: 0 0 14px;
+      font-size: 1.1rem;
+    }
+
+    .profile ul,
+    .source-card ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .profile li,
+    .source-card li {
+      position: relative;
+      padding-left: 18px;
+      color: #333a38;
+      line-height: 1.42;
+    }
+
+    .profile li::before,
+    .source-card li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--gold);
+    }
+
+    .verdict {
+      grid-column: 1 / -1;
+      padding: 16px 24px;
+      border-top: 1px solid var(--line);
+      background: #eee5d6;
+      color: #252b29;
+      font-weight: 800;
+    }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .source-card {
+      min-height: 250px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffaf0;
+      box-shadow: 0 12px 32px rgba(21, 24, 23, 0.11);
+    }
+
+    .screenshot-frame {
+      margin: 0;
+      background: #111315;
+      box-shadow: 0 24px 58px rgba(21, 24, 23, 0.24);
+    }
+
+    .screenshot-label {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 13px;
+      border-bottom: 1px solid rgba(244, 238, 226, 0.14);
+      color: rgba(244, 238, 226, 0.8);
+      font-size: 0.82rem;
+      font-weight: 780;
+    }
+
+    .screenshot-label span {
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.75rem;
+    }
+
+    .screenshot-frame img {
+      display: block;
+      width: 100%;
+      max-height: min(64vh, 690px);
+      object-fit: contain;
+      background: #0f1011;
+    }
+
+    .screenshot-detail img { max-height: min(62vh, 540px); }
+
+    .closing {
+      min-height: 420px;
+      display: grid;
+      align-content: center;
+      gap: 18px;
+      padding: clamp(24px, 5vw, 42px);
+      background: var(--night);
+      color: var(--paper);
+    }
+
+    .closing h3 {
+      margin: 0;
+      max-width: 12ch;
+      font-size: clamp(2rem, 4vw, 4.2rem);
+      line-height: 0.96;
+      letter-spacing: 0;
+    }
+
+    .closing p {
+      margin: 0;
+      max-width: 62ch;
+      color: rgba(244, 238, 226, 0.76);
+      line-height: 1.55;
+      font-size: 1.04rem;
+    }
+
+    .screenshot-beats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .beat {
+      min-height: 138px;
+      padding: 13px;
+      border: 1px solid rgba(244, 238, 226, 0.18);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .beat span {
+      color: var(--cyan);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .beat strong {
+      display: block;
+      margin-top: 10px;
+      line-height: 1.18;
+    }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .link-row a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid rgba(244, 238, 226, 0.22);
+      border-radius: var(--radius);
+      color: var(--paper);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 780;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding-top: 10px;
+      padding-bottom: 20px;
+    }
+
+    .nav { display: flex; gap: 10px; }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(244, 238, 226, 0.2);
+      border-radius: var(--radius);
+      background: rgba(244, 238, 226, 0.08);
+      color: var(--paper);
+      cursor: pointer;
+      transition: transform 150ms ease, background 150ms ease;
+    }
+
+    .icon-btn:hover,
+    .icon-btn:focus-visible {
+      transform: translateY(-1px);
+      background: rgba(244, 238, 226, 0.16);
+      outline: none;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .dot-btn {
+      width: 12px;
+      height: 12px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(244, 238, 226, 0.24);
+      cursor: pointer;
+    }
+
+    .dot-btn.active {
+      width: 34px;
+      background: var(--cyan);
+    }
+
+    .caption {
+      justify-self: end;
+      color: rgba(244, 238, 226, 0.62);
+      font-size: 0.84rem;
+    }
+
+    @media (max-width: 920px) {
+      body { overflow: auto; }
+
+      .app {
+        height: auto;
+        min-height: 100vh;
+      }
+
+      header { grid-template-columns: 1fr; }
+      .topline { min-width: 0; }
+      main { min-height: 780px; }
+
+      .slide,
+      .slide.visual-slide {
+        grid-template-columns: 1fr;
+        align-content: start;
+      }
+
+      .copy { align-self: start; }
+      h2 { max-width: 11ch; }
+
+      .path,
+      .source-grid,
+      .screenshot-beats { grid-template-columns: 1fr; }
+
+      .matrix { grid-template-columns: 1fr; }
+      .profile + .profile { border-left: 0; border-top: 1px solid var(--line); }
+      .controls { grid-template-columns: auto 1fr; }
+      .caption { display: none; }
+    }
+
+    @media (max-width: 560px) {
+      main {
+        min-height: 840px;
+        padding-inline: 10px;
+      }
+
+      header,
+      .controls { padding-inline: 12px; }
+
+      .deck { border-radius: 0; }
+      .slide { padding: 22px 18px 30px; }
+
+      h2 { font-size: clamp(2.1rem, 15vw, 3.3rem); }
+
+      .browser-bar { grid-template-columns: auto 1fr; }
+      .browser-bar .badge { display: none; }
+      .screenshot-label { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="mark" aria-hidden="true">TF</div>
+        <div>
+          <p class="eyebrow">Molthi + TinyFish demo</p>
+          <h1>Weiss, McCabe, and the story evidence ladder</h1>
+        </div>
+      </div>
+      <div class="topline">
+        <span id="counter">01 / 11</span>
+        <div class="meter" aria-hidden="true"><span id="meterFill"></span></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="deck" aria-live="polite">
+        <article class="slide active">
+          <div class="copy">
+            <div class="kicker">Cold open</div>
+            <h2>Start with the line everyone remembers.</h2>
+            <p>Tyrion's finale argument gives the demo a human hook: story as the thing that can bind power, memory, and legitimacy.</p>
+            <div class="claim"><span class="dot"></span><span>Use as resonance, not causation.</span></div>
+          </div>
+          <div class="visual">
+            <div class="closing">
+              <h3>"A good story"</h3>
+              <p>Public anchor: Hollywood Reporter's Game of Thrones finale quote roundup. The line is a doorway, not the proof.</p>
+              <div class="pill-row">
+                <span class="pill">2019</span>
+                <span class="pill">Tyrion</span>
+                <span class="pill">Thematic hook</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="slide">
+          <div class="copy">
+            <div class="kicker">Question</div>
+            <h2>Can the idea be traced backward?</h2>
+            <p>The research question was deliberately narrow: find public evidence connecting D.B. Weiss to Jim or James McCabe, Finnegans Wake, UCD, and democratic literature.</p>
+            <div class="claim"><span class="dot"></span><span>One gate at a time.</span></div>
+          </div>
+          <div class="visual">
+            <div class="map">
+              <div class="path">
+                <div class="node"><small>Hook</small><strong>Game of Thrones</strong><span>Story as public glue</span></div>
+                <div class="node"><small>Author</small><strong>D.B. Weiss</strong><span>Earlier literary work</span></div>
+                <div class="node"><small>Teacher</small><strong>Jim McCabe</strong><span>Wake lectures at UCD</span></div>
+                <div class="node"><small>Text</small><strong>Finnegans Wake</strong><span>Democratic difficulty</span></div>
+              </div>
+              <div class="pathline" aria-hidden="true"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="slide">
+          <div class="copy">
+            <div class="kicker">Search gate</div>
+            <h2>The first TinyFish search passed.</h2>
+            <p>Search returned Shipwreck Library's page for Weiss's 1995 Trinity MPhil thesis as the lead result, already carrying the crucial Jim McCabe breadcrumb.</p>
+            <div class="claim"><span class="dot"></span><span>Screenshot beat 1: search result and snippet.</span></div>
+          </div>
+          <div class="visual">
+            <div class="browser">
+              <div class="browser-bar">
+                <div class="lights" aria-hidden="true"><span></span><span></span><span></span></div>
+                <div class="url">tinyfish search: D.B. Weiss Jim McCabe Finnegans Wake UCD democratic literature</div>
+                <div class="badge">0 credits</div>
+              </div>
+              <div class="search-panel">
+                <div class="query">D.B. Weiss Jim McCabe Finnegans Wake UCD democratic literature</div>
+                <div class="result">
+                  <strong>Paper - D.B. Weiss, "Understanding the (Net) Wake"</strong>
+                  <p>Lead source for the thesis trail: D.B. Weiss, Trinity College Dublin, Finnegans Wake, and Jim McCabe.</p>
+                  <div class="pill-row">
+                    <span class="pill">Shipwreck Library</span>
+                    <span class="pill">1995 thesis</span>
+                    <span class="pill">Jim McCabe</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="slide visual-slide">
+          <div class="copy">
+            <div class="kicker">Receipt 1</div>
+            <h2>The cadence is visible.</h2>
+            <p>The Search API dashboard shows 24 completed searches, a 100% success rate, and zero credits used. This is the strongest meta-visual: disciplined query cadence, not one overloaded prompt.</p>
+            <div class="claim"><span class="dot"></span><span>Use this early to prove reproducibility.</span></div>
+          </div>
+          <div class="visual">
+            <figure class="screenshot-frame">
+              <figcaption class="screenshot-label"><strong>TinyFish Search API dashboard</strong><span>24 searches / 0 credits</span></figcaption>
+              <img src="tinyfish-weiss-carousel-assets/tinyfish-search-dashboard.png" alt="TinyFish Search API dashboard showing completed searches and zero credits used">
+            </figure>
+          </div>
+        </article>
+
+        <article class="slide visual-slide">
+          <div class="copy">
+            <div class="kicker">Receipt 2</div>
+            <h2>The query trail tells the story.</h2>
+            <p>The close-up makes the research method legible: Tyrion hook searches, Jim and James separation, UCD checks, Books Ireland, Finnegans Wake, and the D.B. Weiss thesis gate.</p>
+            <div class="claim"><span class="dot"></span><span>This is the audit trail in one frame.</span></div>
+          </div>
+          <div class="visual">
+            <figure class="screenshot-frame screenshot-detail">
+              <figcaption class="screenshot-label"><strong>Search query table</strong><span>gated prompts</span></figcaption>
+              <img src="tinyfish-weiss-carousel-assets/tinyfish-search-query-detail.png" alt="TinyFish search query table with completed searches for Tyrion, Jim McCabe, James McCabe, UCD, Finnegans Wake, and D.B. Weiss">
+            </figure>
+          </div>
+        </article>
+
+        <article class="slide">
+          <div class="copy">
+            <div class="kicker">Fetch gate</div>
+            <h2>The source text did the work.</h2>
+            <p>TinyFish Fetch confirmed the actual passage: Weiss names Jim McCabe, links him to Finnegans Wake at University College Dublin, and records the democratic-literature framing.</p>
+            <div class="claim"><span class="dot"></span><span>Screenshot beat 2: fetched passage.</span></div>
+          </div>
+          <div class="visual">
+            <div class="folio">
+              <div class="folio-title">
+                <span>Public source</span>
+                <strong>D.B. Weiss, Understanding the Net (Wake)</strong>
+              </div>
+              <div class="quote-strip">"the most democratic work in literature"</div>
+              <div class="source-lines">
+                <div class="line-item">Submitted for the MPhil in Anglo-Irish Literature at Trinity College, Dublin, 1995.</div>
+                <div class="line-item">Jim McCabe is identified in connection with lectures on Finnegans Wake at University College, Dublin.</div>
+                <div class="line-item">The claim is public evidence of influence or reliance, not public proof of identity.</div>
+              </div>
+              <div class="pill-row">
+                <a class="pill" href="https://shipwrecklibrary.com/joyce/paper-weiss-net-wake/" target="_blank" rel="noreferrer">Open Shipwreck source</a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="slide visual-slide">
+          <div class="copy">
+            <div class="kicker">Receipt 3</div>
+            <h2>Fetch turned pages into evidence.</h2>
+            <p>The Fetch dashboard shows the source extraction layer: eight fetches, the Shipwreck thesis URL, identity-profile sources, and the Tyrion quote source, again with zero credits used.</p>
+            <div class="claim"><span class="dot"></span><span>Search found candidates. Fetch extracted the proof layer.</span></div>
+          </div>
+          <div class="visual">
+            <figure class="screenshot-frame">
+              <figcaption class="screenshot-label"><strong>TinyFish Fetch API dashboard</strong><span>8 fetches / 0 credits</span></figcaption>
+              <img src="tinyfish-weiss-carousel-assets/tinyfish-fetch-dashboard.png" alt="TinyFish Fetch API dashboard showing completed fetches for the Weiss thesis, James McCabe sources, and Hollywood Reporter">
+            </figure>
+          </div>
+        </article>
+
+        <article class="slide">
+          <div class="copy">
+            <div class="kicker">Identity test</div>
+            <h2>Jim and James were kept separate.</h2>
+            <p>The demo did not jump to the romantic answer. It built two public profiles first, then compared overlap, contradictions, and missing bridge evidence.</p>
+            <div class="claim"><span class="dot"></span><span>Strongly supported, not publicly confirmed.</span></div>
+          </div>
+          <div class="visual">
+            <div class="matrix">
+              <div class="profile">
+                <h3>A = Jim McCabe</h3>
+                <ul>
+                  <li>Named by Weiss in the Finnegans Wake thesis trail.</li>
+                  <li>Linked to University College Dublin lectures on the Wake.</li>
+                  <li>Appears in the Books Ireland / Thomas Kinsella orbit.</li>
+                </ul>
+              </div>
+              <div class="profile">
+                <h3>B = Dr James McCabe</h3>
+                <ul>
+                  <li>Dublin-born, UCD educated, later Oxford doctorate.</li>
+                  <li>Publicly associated with classical story practice.</li>
+                  <li>Story Parlour and Kinsella/Mangan-adjacent traces match the same world.</li>
+                </ul>
+              </div>
+              <div class="verdict">Verdict: high-confidence hypothesis, with the public bridge still missing.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="slide">
+          <div class="copy">
+            <div class="kicker">Stress test</div>
+            <h2>The opposing case was allowed in.</h2>
+            <p>Same-name traps are real. The evidence ladder explicitly preserves H0 and H2: different people, or different people in the same Dublin/UCD/Joyce/Kinsella circle.</p>
+            <div class="claim"><span class="dot"></span><span>This is why the demo stays credible.</span></div>
+          </div>
+          <div class="visual">
+            <div class="source-grid">
+              <div class="source-card"><h3>For H1</h3><ul><li>Right field.</li><li>Right city.</li><li>Right institutions.</li><li>Right literary orbit.</li></ul></div>
+              <div class="source-card"><h3>Against H1</h3><ul><li>Source says Jim, not James.</li><li>Other McCabes exist.</li><li>No public aka bridge found.</li></ul></div>
+              <div class="source-card"><h3>Clean claim</h3><ul><li>Public evidence supports.</li><li>Private confirmation can close.</li><li>Keep layers separate.</li></ul></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="slide">
+          <div class="copy">
+            <div class="kicker">Payoff</div>
+            <h2>A lost lineage becomes inspectable.</h2>
+            <p>The story is not that TinyFish performed a magic trick. The story is that disciplined Search and Fetch turned a hunch into a reproducible public evidence ladder.</p>
+            <div class="claim"><span class="dot"></span><span>Joyce -> McCabe -> Weiss -> story philosophy.</span></div>
+          </div>
+          <div class="visual">
+            <div class="map">
+              <div class="path">
+                <div class="node"><small>Source</small><strong>Joyce</strong><span>Finnegans Wake</span></div>
+                <div class="node"><small>Lens</small><strong>McCabe</strong><span>Democratic literature</span></div>
+                <div class="node"><small>Writer</small><strong>Weiss</strong><span>1995 thesis</span></div>
+                <div class="node"><small>Echo</small><strong>Tyrion</strong><span>Story as social force</span></div>
+              </div>
+              <div class="pathline" aria-hidden="true"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="slide">
+          <div class="copy">
+            <div class="kicker">Meeting frame</div>
+            <h2>Three screenshots are enough.</h2>
+            <p>The visual argument should show cadence, evidence, and discipline. Anything flashier risks making the proof look weaker than it is.</p>
+            <div class="claim"><span class="dot"></span><span>Search + Fetch beats Agent for this demo.</span></div>
+          </div>
+          <div class="visual">
+            <div class="closing">
+              <h3>Show the ladder.</h3>
+              <p>Use the carousel as the wrapper. The actual screenshots now sit inside the deck as receipts.</p>
+              <div class="screenshot-beats">
+                <div class="beat"><span>01</span><strong>Search dashboard: cadence, success rate, zero credits.</strong></div>
+                <div class="beat"><span>02</span><strong>Query detail: Jim/James separation and gates.</strong></div>
+                <div class="beat"><span>03</span><strong>Fetch dashboard: source extraction layer.</strong></div>
+              </div>
+              <div class="link-row">
+                <a href="https://www.tinyfish.ai/" target="_blank" rel="noreferrer">TinyFish</a>
+                <a href="https://shipwrecklibrary.com/joyce/paper-weiss-net-wake/" target="_blank" rel="noreferrer">Weiss thesis</a>
+                <a href="https://www.hollywoodreporter.com/tv/tv-news/game-thrones-series-finale-iron-throne-best-quotes-explained-1213276/" target="_blank" rel="noreferrer">Tyrion source</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="controls">
+      <div class="nav">
+        <button class="icon-btn" id="prev" type="button" aria-label="Previous slide" title="Previous slide">&#8592;</button>
+        <button class="icon-btn" id="next" type="button" aria-label="Next slide" title="Next slide">&#8594;</button>
+      </div>
+      <div class="dots" id="dots" aria-label="Slide navigation"></div>
+      <div class="caption">Sources: TinyFish clean run, Shipwreck Library, Hollywood Reporter</div>
+    </footer>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const dots = document.getElementById("dots");
+    const counter = document.getElementById("counter");
+    const meterFill = document.getElementById("meterFill");
+    let index = 0;
+
+    slides.forEach((_, slideIndex) => {
+      const dot = document.createElement("button");
+      dot.className = "dot-btn";
+      dot.type = "button";
+      dot.setAttribute("aria-label", `Go to slide ${slideIndex + 1}`);
+      dot.addEventListener("click", () => show(slideIndex));
+      dots.appendChild(dot);
+    });
+
+    function show(nextIndex) {
+      index = (nextIndex + slides.length) % slides.length;
+      slides.forEach((slide, slideIndex) => {
+        slide.classList.toggle("active", slideIndex === index);
+      });
+      Array.from(dots.children).forEach((dot, dotIndex) => {
+        dot.classList.toggle("active", dotIndex === index);
+      });
+      counter.textContent = `${String(index + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+      meterFill.style.setProperty("--progress", ((index + 1) / slides.length) * 100);
+    }
+
+    document.getElementById("prev").addEventListener("click", () => show(index - 1));
+    document.getElementById("next").addEventListener("click", () => show(index + 1));
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") show(index - 1);
+      if (event.key === "ArrowRight") show(index + 1);
+    });
+
+    show(0);
+  </script>
+</body>
+</html>

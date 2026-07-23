@@ -4,7 +4,7 @@ CREATE CONSTRAINT jim_thi_portal_universe_key IF NOT EXISTS FOR (g:JimThiPortalU
 CREATE CONSTRAINT jim_thi_portal_node_uid IF NOT EXISTS FOR (n:JimThiPortalNode) REQUIRE n.uid IS UNIQUE;
 
 MERGE (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"})
-SET g.title = "Jim x Thi Knowledge Portal", g.generatedAt = "2026-07-12", g.scopeNote = "Public-facing GitHub Pages portal for Jim and Thi. It starts nearly blank, with TinyFish content and generic topic pills that can absorb future summaries, calls, and assets.";
+SET g.title = "Jim x Thi Knowledge Portal", g.generatedAt = "2026-07-23", g.scopeNote = "Public-facing GitHub Pages portal for Jim and Thi. It starts nearly blank, with TinyFish content and generic topic pills that can absorb future summaries, calls, and assets.";
 
 MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:portal"})
 SET n.id = "portal", n.name = "Jim x Thi Portal", n.type = "portal", n.cluster = "Portal spine", n.status = "public-v1", n.summary = "Public GitHub Pages cockpit for shared summaries, artifacts, and topic clusters.", n.detail = "The portal is intentionally sparse at launch: it should grow from actual Jim/Thi work instead of pretending to be full.", n.url = "", n.graphKey = "jim-thi-knowledge-portal-v1";
@@ -42,7 +42,7 @@ MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:Jim
 MERGE (g)-[:CONTAINS]->(n);
 
 MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"})
-SET n.id = "pill_books", n.name = "Books", n.type = "nav_pill", n.cluster = "Working topics", n.status = "blank", n.summary = "Placeholder for books, essays, reading notes, and literary source material.", n.detail = "Useful for Jim-facing reading, references, and book-derived summaries.", n.url = "", n.graphKey = "jim-thi-knowledge-portal-v1";
+SET n.id = "pill_books", n.name = "Books", n.type = "nav_pill", n.cluster = "Working topics", n.status = "seeded", n.summary = "Books, essays, reading notes, and literary source material.", n.detail = "Now seeded with The Corporate, Thi's modern Machiavelli frame for organizational dysfunction as human power, fear, incentives, culture, and trust.", n.url = "", n.graphKey = "jim-thi-knowledge-portal-v1";
 MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"})
 MERGE (g)-[:CONTAINS]->(n);
 
@@ -74,6 +74,11 @@ MERGE (g)-[:CONTAINS]->(n);
 MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_first_call_summary"})
 SET n.id = "artifact_first_call_summary", n.name = "First Call Summary", n.type = "artifact", n.cluster = "Calls", n.status = "planned", n.summary = "Blank slot for the first video-call summary.", n.detail = "Promote when actual call notes or transcripts exist.", n.url = "", n.graphKey = "jim-thi-knowledge-portal-v1";
 MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_first_call_summary"})
+MERGE (g)-[:CONTAINS]->(n);
+
+MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_the_corporate"})
+SET n.id = "artifact_the_corporate", n.name = "The Corporate", n.type = "artifact", n.cluster = "Books", n.status = "working-seed", n.summary = "Modern Machiavelli frame for organizations as human courts with technology, process, KPIs, and strategy decks layered on top.", n.detail = "An update of The Prince for corporate life: dysfunction comes from people seeking safety, status, belonging, advantage, and moral cover. Technology is the tool and mirror, not the root cause.", n.url = "", n.graphKey = "jim-thi-knowledge-portal-v1";
+MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_the_corporate"})
 MERGE (g)-[:CONTAINS]->(n);
 
 MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:action_next_summary"})
@@ -116,6 +121,18 @@ SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "strong", r.note = 
 MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_tinyfish"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_tinyfish_carousel"})
 MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_tinyfish_carousel"}]->(b)
 SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "strong", r.note = "Seeded TinyFish content.";
+
+MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_the_corporate"})
+MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_books_the_corporate"}]->(b)
+SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "strong", r.note = "Thi's Machiavelli-for-organizations book seed.";
+
+MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_the_corporate"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_language"})
+MERGE (a)-[r:RELATES_TO {uid: "jim-thi-knowledge-portal-v1:edge:e_the_corporate_language"}]->(b)
+SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "medium", r.note = "The frame depends on naming, rhetoric, and the language of power.";
+
+MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_the_corporate"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_tinyfish"})
+MERGE (a)-[r:RELATES_TO {uid: "jim-thi-knowledge-portal-v1:edge:e_the_corporate_tinyfish"}]->(b)
+SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "weak", r.note = "AI is treated as mirror and tool inside human systems, not the protagonist.";
 
 MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_calls"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_first_call_summary"})
 MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_calls_summary"}]->(b)

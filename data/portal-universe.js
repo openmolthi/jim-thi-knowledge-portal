@@ -1,6 +1,6 @@
 window.JIM_THI_PORTAL_UNIVERSE = {
   "graphKey": "jim-thi-knowledge-portal-v1",
-  "generatedAt": "2026-07-12",
+  "generatedAt": "2026-07-23",
   "title": "Jim x Thi Knowledge Portal",
   "scopeNote": "Public-facing GitHub Pages portal for Jim and Thi. It starts nearly blank, with TinyFish content and generic topic pills that can absorb future summaries, calls, and assets.",
   "driveFolder": {
@@ -87,9 +87,9 @@ window.JIM_THI_PORTAL_UNIVERSE = {
       "name": "Books",
       "type": "nav_pill",
       "cluster": "Working topics",
-      "status": "blank",
-      "summary": "Placeholder for books, essays, reading notes, and literary source material.",
-      "detail": "Useful for Jim-facing reading, references, and book-derived summaries."
+      "status": "seeded",
+      "summary": "Books, essays, reading notes, and literary source material.",
+      "detail": "Now seeded with The Corporate, Thi's modern Machiavelli frame for organizational dysfunction as human power, fear, incentives, culture, and trust."
     },
     {
       "id": "pill_headlines",
@@ -146,6 +146,16 @@ window.JIM_THI_PORTAL_UNIVERSE = {
       "status": "planned",
       "summary": "Blank slot for the first video-call summary.",
       "detail": "Promote when actual call notes or transcripts exist.",
+      "url": ""
+    },
+    {
+      "id": "artifact_the_corporate",
+      "name": "The Corporate",
+      "type": "artifact",
+      "cluster": "Books",
+      "status": "working-seed",
+      "summary": "Modern Machiavelli frame for organizations as human courts with technology, process, KPIs, and strategy decks layered on top.",
+      "detail": "An update of The Prince for corporate life: dysfunction comes from people seeking safety, status, belonging, advantage, and moral cover. Technology is the tool and mirror, not the root cause.",
       "url": ""
     },
     {
@@ -232,6 +242,30 @@ window.JIM_THI_PORTAL_UNIVERSE = {
       "note": "Seeded TinyFish content."
     },
     {
+      "id": "e_books_the_corporate",
+      "source": "pill_books",
+      "target": "artifact_the_corporate",
+      "type": "HAS_ARTIFACT",
+      "strength": "strong",
+      "note": "Thi's Machiavelli-for-organizations book seed."
+    },
+    {
+      "id": "e_the_corporate_language",
+      "source": "artifact_the_corporate",
+      "target": "pill_language",
+      "type": "RELATES_TO",
+      "strength": "medium",
+      "note": "The frame depends on naming, rhetoric, and the language of power."
+    },
+    {
+      "id": "e_the_corporate_tinyfish",
+      "source": "artifact_the_corporate",
+      "target": "pill_tinyfish",
+      "type": "RELATES_TO",
+      "strength": "weak",
+      "note": "AI is treated as mirror and tool inside human systems, not the protagonist."
+    },
+    {
       "id": "e_calls_summary",
       "source": "pill_calls",
       "target": "artifact_first_call_summary",
@@ -281,11 +315,11 @@ window.JIM_THI_PORTAL_UNIVERSE = {
     }
   ],
   "summary": {
-    "nodeCount": 15,
-    "edgeCount": 15,
+    "nodeCount": 16,
+    "edgeCount": 18,
     "clusterCount": 6,
     "pillCount": 6,
-    "artifactCount": 3,
+    "artifactCount": 4,
     "liveArtifactCount": 2
   }
 };

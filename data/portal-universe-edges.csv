@@ -8,9 +8,6 @@ e_portal_calls,portal,pill_calls,HOSTS_PILL,medium,Generic blank-state pill.
 e_portal_assets,portal,pill_assets,HOSTS_PILL,strong,Drive assets pill.
 e_tinyfish_demo,pill_tinyfish,artifact_tinyfish_founder_demo,HAS_ARTIFACT,strong,Seeded TinyFish content.
 e_tinyfish_carousel,pill_tinyfish,artifact_tinyfish_carousel,HAS_ARTIFACT,strong,Seeded TinyFish content.
-e_books_the_corporate,pill_books,artifact_the_corporate,HAS_ARTIFACT,strong,Thi's Machiavelli-for-organizations book seed.
-e_the_corporate_language,artifact_the_corporate,pill_language,RELATES_TO,medium,"The frame depends on naming, rhetoric, and the language of power."
-e_the_corporate_tinyfish,artifact_the_corporate,pill_tinyfish,RELATES_TO,weak,"AI is treated as mirror and tool inside human systems, not the protagonist."
 e_calls_summary,pill_calls,artifact_first_call_summary,HAS_ARTIFACT,weak,Blank call summary slot.
 e_assets_drive,pill_assets,assets_drive,USES_ASSET_FOLDER,strong,Shared Drive folder.
 e_chat_to_language,pill_language,stream_whatsapp,HAS_SOURCE_STREAM,medium,Chat can generate language notes.

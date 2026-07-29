@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#f1eee5"/>
+  <path d="M0 420 235 250l120 80 175-190 270 280v80H0z" fill="#c7c0ad"/>
+  <path d="m72 383 176-126 113 70 170-178 197 209" fill="none" stroke="#29333b" stroke-width="16"/>
+  <circle cx="531" cy="149" r="16" fill="#b96a40"/>
+  <text x="62" y="90" fill="#29333b" font-family="Georgia,serif" font-size="54" font-weight="700">THE IMPROVEMENT</text>
+  <text x="62" y="150" fill="#b96a40" font-family="Arial,sans-serif" font-size="46" font-weight="700" letter-spacing="6">MANIFESTO</text>
+  <text x="64" y="196" fill="#596068" font-family="Arial,sans-serif" font-size="21">Human-centred improvement • Next practice</text>
+</svg>

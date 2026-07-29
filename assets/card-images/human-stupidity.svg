@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#e2d3b9"/>
+  <path d="M270 375V125h260v250M270 250h260M400 125v250" fill="none" stroke="#252a2d" stroke-width="9"/>
+  <text x="335" y="205" text-anchor="middle" fill="#28706e" font-family="Arial,sans-serif" font-size="72" font-weight="700">+</text>
+  <text x="465" y="205" text-anchor="middle" fill="#b94232" font-family="Arial,sans-serif" font-size="72" font-weight="700">−</text>
+  <text x="335" y="335" text-anchor="middle" fill="#b94232" font-family="Arial,sans-serif" font-size="72" font-weight="700">−</text>
+  <text x="465" y="335" text-anchor="middle" fill="#252a2d" font-family="Arial,sans-serif" font-size="72" font-weight="700">?</text>
+  <text x="400" y="70" text-anchor="middle" fill="#252a2d" font-family="Georgia,serif" font-size="42" font-weight="700">THE BASIC LAWS</text>
+  <text x="400" y="440" text-anchor="middle" fill="#252a2d" font-family="Arial,sans-serif" font-size="37" font-weight="700" letter-spacing="3">OF HUMAN STUPIDITY</text>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#bcd4da"/>
+  <circle cx="670" cy="96" r="56" fill="#f3df9b"/>
+  <path d="M0 385c150-60 255-12 390-57 143-48 252-19 410 41v131H0z" fill="#708c73"/>
+  <g transform="translate(400 240) rotate(-8)" fill="none" stroke="#4a3328" stroke-width="12" stroke-linecap="round">
+    <path d="M-170 0h340M-45-70v140M45-70v140M-135-70h270M-135 70h270"/>
+    <circle cx="-120" cy="82" r="31"/><circle cx="120" cy="82" r="31"/>
+    <path d="M170 0h70m-70 0 45-28m-45 28 45 28"/>
+  </g>
+  <text x="42" y="67" fill="#4a3328" font-family="Georgia,serif" font-size="39" font-weight="700">THOSE MAGNIFICENT MEN</text>
+  <text x="42" y="110" fill="#9a352d" font-family="Arial,sans-serif" font-size="31" font-weight="700" letter-spacing="3">IN THEIR FLYING MACHINES</text>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#f4eedf"/>
+  <path d="M135 330c75-18 97-105 150-105 62 0 70 88 121 88 59 0 74-126 141-126 54 0 68 76 118 84" fill="none" stroke="#272727" stroke-width="19" stroke-linecap="round"/>
+  <path d="m119 331 32-27m-32 27 37 11m528-68-35-18m35 18-29 27" stroke="#c14232" stroke-width="10"/>
+  <text x="400" y="122" text-anchor="middle" fill="#272727" font-family="Georgia,serif" font-size="82" font-weight="700">ON BULLSHIT</text>
+  <text x="400" y="424" text-anchor="middle" fill="#796f61" font-family="Arial,sans-serif" font-size="24">Truth matters. Indifference to it matters more.</text>
+</svg>

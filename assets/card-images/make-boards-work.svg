@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#202831"/>
+  <ellipse cx="400" cy="285" rx="270" ry="112" fill="#ad8d57"/>
+  <ellipse cx="400" cy="285" rx="222" ry="75" fill="#d9c49b"/>
+  <g fill="#edf0ec"><circle cx="400" cy="112" r="26"/><circle cx="250" cy="145" r="26"/><circle cx="550" cy="145" r="26"/><circle cx="170" cy="270" r="26"/><circle cx="630" cy="270" r="26"/></g>
+  <text x="400" y="270" text-anchor="middle" fill="#202831" font-family="Georgia,serif" font-size="54" font-weight="700">MAKE BOARDS</text>
+  <text x="400" y="327" text-anchor="middle" fill="#202831" font-family="Arial,sans-serif" font-size="47" font-weight="700" letter-spacing="7">WORK</text>
+  <text x="400" y="454" text-anchor="middle" fill="#d9c49b" font-family="Arial,sans-serif" font-size="22">Judgement • Challenge • Trust</text>
+</svg>

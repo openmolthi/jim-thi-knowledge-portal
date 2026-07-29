@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#e9f3f3"/>
+  <circle cx="400" cy="250" r="156" fill="none" stroke="#df493b" stroke-width="46"/>
+  <circle cx="400" cy="250" r="32" fill="#202d35"/>
+  <g stroke="#202d35" stroke-width="5" opacity=".55"><path d="M400 94V20M400 480v-74M244 250H40M760 250H556M290 140 213 63M587 437l-77-77M510 140l77-77M213 437l77-77"/></g>
+  <text x="400" y="267" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="30" font-weight="700">ALL</text>
+  <text x="400" y="465" text-anchor="middle" fill="#202d35" font-family="Georgia,serif" font-size="54" font-weight="700">THE CIRCLE</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#151413"/>
+  <rect x="285" y="115" width="230" height="265" rx="8" fill="#9d2825" stroke="#d2a94f" stroke-width="8"/>
+  <path d="M330 230h140v116H330zM345 230v-52h24v52m62 0v-52h24v52" fill="none" stroke="#f1dfb6" stroke-width="15"/>
+  <path d="m350 159 22-40 28 40 28-40 22 40" fill="none" stroke="#d2a94f" stroke-width="12"/>
+  <text x="400" y="75" text-anchor="middle" fill="#d2a94f" font-family="Georgia,serif" font-size="24" letter-spacing="8">IV</text>
+  <text x="400" y="438" text-anchor="middle" fill="#f1dfb6" font-family="Georgia,serif" font-size="58" font-weight="700">THE EMPEROR</text>
+</svg>

@@ -89,7 +89,14 @@ window.JIM_THI_PORTAL_UNIVERSE = {
       "cluster": "TinyFish",
       "status": "live",
       "summary": "Founder-audience demo narrative with evidence cadence and enterprise payoff.",
-      "detail": "Copied into this GitHub Pages bundle so Jim does not need seedbox access.",
+      "detail": "A founder-facing demonstration of TinyFish as an evidence-producing web agent rather than a conventional search tool. The narrative follows a difficult research question from natural-language intent through browser execution, source inspection, and a concise answer whose claims remain visibly tied to receipts.",
+      "keyIdeas": [
+        "The product story begins with a consequential question, not a tour of browser-automation features.",
+        "TinyFish turns open-web work into a traceable sequence of searches, page visits, extractions, and evidence checks.",
+        "Visible receipts make the output easier to challenge and trust than an answer detached from its sources.",
+        "The enterprise value is repeatable research at software speed while preserving an auditable path back to the web."
+      ],
+      "whyItMatters": "The demo frames agentic browsing as accountable knowledge work. Its strongest claim is not simply that an agent can navigate websites, but that it can compress a messy research journey without hiding how the conclusion was reached.",
       "url": "tinyfish-founder-demo.html"
     },
     {
@@ -99,7 +106,14 @@ window.JIM_THI_PORTAL_UNIVERSE = {
       "cluster": "TinyFish",
       "status": "live",
       "summary": "Carousel-style evidence ladder with screenshot receipt flow.",
-      "detail": "Copied into this GitHub Pages bundle so Jim does not need seedbox access.",
+      "detail": "A visual evidence carousel built around the same TinyFish research flow. Instead of presenting one polished conclusion, it breaks the journey into a sequence of screenshots and source moments so an audience can see the agent gather, test, and assemble the answer.",
+      "keyIdeas": [
+        "Each slide contributes one piece of evidence, keeping the story legible instead of collapsing everything into a dense dashboard.",
+        "The sequence distinguishes discovery from verification: finding a page is not the same as establishing a claim.",
+        "Screenshots function as receipts, making the agent's work inspectable by a human audience.",
+        "The format is reusable for sales, research, diligence, and executive briefings where provenance matters."
+      ],
+      "whyItMatters": "This is the visual companion to the founder demo. It makes an otherwise invisible agent workflow tangible and gives viewers enough intermediate evidence to judge whether the final synthesis deserves confidence.",
       "url": "tinyfish-weiss-carousel.html"
     },
     {

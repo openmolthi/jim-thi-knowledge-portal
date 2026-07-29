@@ -42,12 +42,12 @@ MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:Jim
 MERGE (g)-[:CONTAINS]->(n);
 
 MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_tinyfish_founder_demo"})
-SET n.id = "artifact_tinyfish_founder_demo", n.name = "TinyFish Founder Demo", n.type = "artifact", n.cluster = "TinyFish", n.status = "live", n.summary = "Founder-audience demo narrative with evidence cadence and enterprise payoff.", n.detail = "Copied into this GitHub Pages bundle so Jim does not need seedbox access.", n.url = "tinyfish-founder-demo.html", n.graphKey = "jim-thi-knowledge-portal-v1";
+SET n.id = "artifact_tinyfish_founder_demo", n.name = "TinyFish Founder Demo", n.type = "artifact", n.cluster = "TinyFish", n.status = "live", n.summary = "Founder-audience demo narrative with evidence cadence and enterprise payoff.", n.detail = "A founder-facing demonstration of TinyFish as an evidence-producing web agent rather than a conventional search tool. The narrative follows a difficult research question from natural-language intent through browser execution, source inspection, and a concise answer whose claims remain visibly tied to receipts.", n.url = "tinyfish-founder-demo.html", n.graphKey = "jim-thi-knowledge-portal-v1";
 MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_tinyfish_founder_demo"})
 MERGE (g)-[:CONTAINS]->(n);
 
 MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_tinyfish_carousel"})
-SET n.id = "artifact_tinyfish_carousel", n.name = "TinyFish Evidence Carousel", n.type = "artifact", n.cluster = "TinyFish", n.status = "live", n.summary = "Carousel-style evidence ladder with screenshot receipt flow.", n.detail = "Copied into this GitHub Pages bundle so Jim does not need seedbox access.", n.url = "tinyfish-weiss-carousel.html", n.graphKey = "jim-thi-knowledge-portal-v1";
+SET n.id = "artifact_tinyfish_carousel", n.name = "TinyFish Evidence Carousel", n.type = "artifact", n.cluster = "TinyFish", n.status = "live", n.summary = "Carousel-style evidence ladder with screenshot receipt flow.", n.detail = "A visual evidence carousel built around the same TinyFish research flow. Instead of presenting one polished conclusion, it breaks the journey into a sequence of screenshots and source moments so an audience can see the agent gather, test, and assemble the answer.", n.url = "tinyfish-weiss-carousel.html", n.graphKey = "jim-thi-knowledge-portal-v1";
 MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_tinyfish_carousel"})
 MERGE (g)-[:CONTAINS]->(n);
 

@@ -744,8 +744,6 @@ function highlightedCardIds() {
 
 function openCardDetail(id) {
   state.activeCardId = id;
-  state.selected = state.nodeById.get(id) || state.selected;
-  renderSelected();
   renderCardDetail();
 }
 

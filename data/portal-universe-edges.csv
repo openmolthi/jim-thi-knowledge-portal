@@ -8,6 +8,13 @@ e_portal_calls,portal,pill_calls,HOSTS_PILL,medium,Generic blank-state pill.
 e_portal_assets,portal,pill_assets,HOSTS_PILL,strong,Drive assets pill.
 e_tinyfish_demo,pill_tinyfish,artifact_tinyfish_founder_demo,HAS_ARTIFACT,strong,Seeded TinyFish content.
 e_tinyfish_carousel,pill_tinyfish,artifact_tinyfish_carousel,HAS_ARTIFACT,strong,Seeded TinyFish content.
+e_books_improvement,pill_books,artifact_improvement_manifesto,HAS_ARTIFACT,strong,PDF shared by Jim.
+e_books_boards,pill_books,artifact_make_boards_work,HAS_ARTIFACT,strong,Book proof shared by Jim.
+e_books_emperor,pill_books,artifact_emperor,HAS_ARTIFACT,medium,Link shared by Jim.
+e_books_circle,pill_books,artifact_circle,HAS_ARTIFACT,medium,Novel reference shared by Jim.
+e_books_bullshit,pill_books,artifact_on_bullshit,HAS_ARTIFACT,medium,Essay shared by Jim.
+e_books_stupidity,pill_books,artifact_human_stupidity,HAS_ARTIFACT,medium,Book shared by Jim.
+e_books_flying,pill_books,artifact_flying_machines,HAS_ARTIFACT,medium,Film shared by Jim.
 e_calls_summary,pill_calls,artifact_first_call_summary,HAS_ARTIFACT,weak,Blank call summary slot.
 e_assets_drive,pill_assets,assets_drive,USES_ASSET_FOLDER,strong,Shared Drive folder.
 e_chat_to_language,pill_language,stream_whatsapp,HAS_SOURCE_STREAM,medium,Chat can generate language notes.

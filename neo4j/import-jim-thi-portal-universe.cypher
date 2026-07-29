@@ -4,7 +4,7 @@ CREATE CONSTRAINT jim_thi_portal_universe_key IF NOT EXISTS FOR (g:JimThiPortalU
 CREATE CONSTRAINT jim_thi_portal_node_uid IF NOT EXISTS FOR (n:JimThiPortalNode) REQUIRE n.uid IS UNIQUE;
 
 MERGE (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"})
-SET g.title = "Jim x Thi Knowledge Portal", g.generatedAt = "2026-07-23", g.scopeNote = "Public-facing GitHub Pages portal for Jim and Thi. It starts nearly blank, with TinyFish content and generic topic pills that can absorb future summaries, calls, and assets.";
+SET g.title = "Jim x Thi Knowledge Portal", g.generatedAt = "2026-07-30", g.scopeNote = "Public-facing GitHub Pages portal for Jim and Thi. It starts nearly blank, with TinyFish content and generic topic pills that can absorb future summaries, calls, and assets.";
 
 MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:portal"})
 SET n.id = "portal", n.name = "Jim x Thi Portal", n.type = "portal", n.cluster = "Portal spine", n.status = "public-v1", n.summary = "Public GitHub Pages cockpit for shared summaries, artifacts, and topic clusters.", n.detail = "The portal is intentionally sparse at launch: it should grow from actual Jim/Thi work instead of pretending to be full.", n.url = "", n.graphKey = "jim-thi-knowledge-portal-v1";
@@ -42,7 +42,7 @@ MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:Jim
 MERGE (g)-[:CONTAINS]->(n);
 
 MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"})
-SET n.id = "pill_books", n.name = "Books", n.type = "nav_pill", n.cluster = "Working topics", n.status = "blank", n.summary = "Placeholder for books, essays, reading notes, and literary source material.", n.detail = "Useful for Jim-facing reading, references, and book-derived summaries.", n.url = "", n.graphKey = "jim-thi-knowledge-portal-v1";
+SET n.id = "pill_books", n.name = "Books", n.type = "nav_pill", n.cluster = "Working topics", n.status = "active", n.summary = "Books, essays, films, and reading material shared by Jim.", n.detail = "A growing shelf of references with short explanations of why each item matters.", n.url = "", n.graphKey = "jim-thi-knowledge-portal-v1";
 MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"})
 MERGE (g)-[:CONTAINS]->(n);
 
@@ -69,6 +69,41 @@ MERGE (g)-[:CONTAINS]->(n);
 MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_tinyfish_carousel"})
 SET n.id = "artifact_tinyfish_carousel", n.name = "TinyFish Evidence Carousel", n.type = "artifact", n.cluster = "TinyFish", n.status = "live", n.summary = "Carousel-style evidence ladder with screenshot receipt flow.", n.detail = "Copied into this GitHub Pages bundle so Jim does not need seedbox access.", n.url = "tinyfish-weiss-carousel.html", n.graphKey = "jim-thi-knowledge-portal-v1";
 MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_tinyfish_carousel"})
+MERGE (g)-[:CONTAINS]->(n);
+
+MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_improvement_manifesto"})
+SET n.id = "artifact_improvement_manifesto", n.name = "The Improvement Manifesto", n.type = "artifact", n.cluster = "Books", n.status = "new", n.summary = "John Glennane's 2026 declaration for human-centred improvement: business should lead technology, and original, complete, durable “True Design” should replace templates and quick fixes.", n.detail = "A visual call to move beyond accidental improvement, technocratic ready-made answers, AI shortcuts, and “best practice.” Its preferred alternative is agency, human vocation, trust, and Next Practice.", n.url = "", n.graphKey = "jim-thi-knowledge-portal-v1";
+MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_improvement_manifesto"})
+MERGE (g)-[:CONTAINS]->(n);
+
+MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_make_boards_work"})
+SET n.id = "artifact_make_boards_work", n.name = "Make Boards Work", n.type = "artifact", n.cluster = "Books", n.status = "new", n.summary = "Marc O. Stöckli's practical guide to moving boards from legally required bodies to vital sources of judgement, challenge, trust, and strategic value.", n.detail = "The book combines behavioural norms—beginner's mind, psychological safety, and trust—with board composition, conflicts, the chair as lightning rod, and a disciplined cycle before, during, and after meetings.", n.url = "", n.graphKey = "jim-thi-knowledge-portal-v1";
+MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_make_boards_work"})
+MERGE (g)-[:CONTAINS]->(n);
+
+MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_emperor"})
+SET n.id = "artifact_emperor", n.name = "The Emperor", n.type = "artifact", n.cluster = "Books", n.status = "new", n.summary = "Tarot archetype of authority, structure, stability, boundaries, and disciplined leadership.", n.detail = "Jim shared Biddy Tarot's interpretation of the fourth Major Arcana card.", n.url = "https://biddytarot.com/tarot-card-meanings/major-arcana/emperor/", n.graphKey = "jim-thi-knowledge-portal-v1";
+MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_emperor"})
+MERGE (g)-[:CONTAINS]->(n);
+
+MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_circle"})
+SET n.id = "artifact_circle", n.name = "The Circle", n.type = "artifact", n.cluster = "Books", n.status = "new", n.summary = "Dave Eggers' 2013 dystopian novel about a dominant technology company whose pursuit of transparency erodes privacy, autonomy, and dissent.", n.detail = "A useful provocation about surveillance, platform power, and the seduction of frictionless participation.", n.url = "https://en.wikipedia.org/wiki/The_Circle_(Eggers_novel)", n.graphKey = "jim-thi-knowledge-portal-v1";
+MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_circle"})
+MERGE (g)-[:CONTAINS]->(n);
+
+MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_on_bullshit"})
+SET n.id = "artifact_on_bullshit", n.name = "On Bullshit", n.type = "artifact", n.cluster = "Books", n.status = "new", n.summary = "Harry Frankfurt's philosophical essay distinguishing bullshit from lying: the liar tracks truth in order to conceal it; the bullshitter is indifferent to truth.", n.detail = "A compact lens for analysing rhetoric, institutional language, and claims designed primarily to create an impression.", n.url = "https://www.csc2.ncsu.edu/faculty/mpsingh/local/Social/f24/wrap/readings/Harry-Frankfurt-On-Bullshit-1988.pdf", n.graphKey = "jim-thi-knowledge-portal-v1";
+MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_on_bullshit"})
+MERGE (g)-[:CONTAINS]->(n);
+
+MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_human_stupidity"})
+SET n.id = "artifact_human_stupidity", n.name = "The Basic Laws of Human Stupidity", n.type = "artifact", n.cluster = "Books", n.status = "new", n.summary = "Carlo M. Cipolla's satirical model of stupidity: people routinely underestimate its prevalence and destructive power, especially when actions harm others without benefiting the actor.", n.detail = "A humorous but sharp framework for thinking about irrational harm in organisations and society.", n.url = "https://ia801609.us.archive.org/29/items/kaufman-s-clinical-neurology-for-psychiatrists-pdfdrive/The%20Basic%20Laws%20of%20Human%20Stupidity%20%28Carlo%20M.%20Cipolla%29%20%28Z-Library%29.pdf", n.graphKey = "jim-thi-knowledge-portal-v1";
+MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_human_stupidity"})
+MERGE (g)-[:CONTAINS]->(n);
+
+MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_flying_machines"})
+SET n.id = "artifact_flying_machines", n.name = "Those Magnificent Men in Their Flying Machines", n.type = "artifact", n.cluster = "Books", n.status = "new", n.summary = "The 1965 British adventure comedy about an eccentric international air race from London to Paris in the pioneering era of aviation.", n.detail = "Jim shared a link to the film—a playful celebration of invention, rivalry, national character, and glorious mechanical chaos.", n.url = "https://ok.ru/video/6496174017084", n.graphKey = "jim-thi-knowledge-portal-v1";
+MATCH (g:JimThiPortalUniverse {graphKey: "jim-thi-knowledge-portal-v1"}), (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_flying_machines"})
 MERGE (g)-[:CONTAINS]->(n);
 
 MERGE (n:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_first_call_summary"})
@@ -116,6 +151,34 @@ SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "strong", r.note = 
 MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_tinyfish"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_tinyfish_carousel"})
 MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_tinyfish_carousel"}]->(b)
 SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "strong", r.note = "Seeded TinyFish content.";
+
+MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_improvement_manifesto"})
+MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_books_improvement"}]->(b)
+SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "strong", r.note = "PDF shared by Jim.";
+
+MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_make_boards_work"})
+MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_books_boards"}]->(b)
+SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "strong", r.note = "Book proof shared by Jim.";
+
+MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_emperor"})
+MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_books_emperor"}]->(b)
+SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "medium", r.note = "Link shared by Jim.";
+
+MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_circle"})
+MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_books_circle"}]->(b)
+SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "medium", r.note = "Novel reference shared by Jim.";
+
+MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_on_bullshit"})
+MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_books_bullshit"}]->(b)
+SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "medium", r.note = "Essay shared by Jim.";
+
+MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_human_stupidity"})
+MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_books_stupidity"}]->(b)
+SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "medium", r.note = "Book shared by Jim.";
+
+MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_books"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_flying_machines"})
+MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_books_flying"}]->(b)
+SET r.graphKey = "jim-thi-knowledge-portal-v1", r.strength = "medium", r.note = "Film shared by Jim.";
 
 MATCH (a:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:pill_calls"}), (b:JimThiPortalNode {uid: "jim-thi-knowledge-portal-v1:artifact_first_call_summary"})
 MERGE (a)-[r:HAS_ARTIFACT {uid: "jim-thi-knowledge-portal-v1:edge:e_calls_summary"}]->(b)

@@ -9,10 +9,7 @@ Every meaningful portal content update should update `data/portal-universe.json`
 ## Current Pills
 
 - **TinyFish** (seeded) - The only seeded content cluster at launch.
-- **Language** (blank) - Placeholder for language, phrasing, naming, rhetoric, and semantic work.
 - **Books** (active) - Books, essays, films, and reading material shared by Jim.
-- **Headlines** (blank) - Placeholder for current signals, news, and short headline scans.
-- **Calls** (blank) - Placeholder for video-call notes and decisions.
 - **Assets** (live) - Entry point to shared Drive materials.
 
 ## Current Artifacts
@@ -26,4 +23,3 @@ Every meaningful portal content update should update `data/portal-universe.json`
 - **On Bullshit** (new) - Harry Frankfurt's philosophical essay distinguishing bullshit from lying: the liar tracks truth in order to conceal it; the bullshitter is indifferent to truth.
 - **The Basic Laws of Human Stupidity** (new) - Carlo M. Cipolla's satirical model of stupidity: people routinely underestimate its prevalence and destructive power, especially when actions harm others without benefiting the actor.
 - **Those Magnificent Men in Their Flying Machines** (new) - The 1965 British adventure comedy about an eccentric international air race from London to Paris in the pioneering era of aviation.
-- **First Call Summary** (planned) - Blank slot for the first video-call summary.

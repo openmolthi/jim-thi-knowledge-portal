@@ -145,7 +145,14 @@
       "cluster": "Books",
       "status": "new",
       "summary": "John Glennane's 2026 declaration for human-centred improvement: business should lead technology, and original, complete, durable “True Design” should replace templates and quick fixes.",
-      "detail": "A visual call to move beyond accidental improvement, technocratic ready-made answers, AI shortcuts, and “best practice.” Its preferred alternative is agency, human vocation, trust, and Next Practice."
+      "detail": "A visual call to move beyond accidental improvement, technocratic ready-made answers, AI shortcuts, and “best practice.” Its preferred alternative is agency, human vocation, trust, and Next Practice.",
+      "keyIdeas": [
+        "Improvement should begin with human purpose and business need—not with a technology looking for a use case.",
+        "Templates and borrowed “best practices” can suppress original thinking and create accidental, incomplete change.",
+        "True Design should be original, coherent and durable enough to survive beyond the launch moment.",
+        "The manifesto argues for Next Practice: learning forward from context rather than copying yesterday’s answer."
+      ],
+      "whyItMatters": "A strong provocation for transformation leaders: AI and automation can accelerate change, but they cannot substitute for judgement, agency and a genuinely designed operating model."
     },
     {
       "id": "artifact_make_boards_work",
@@ -154,7 +161,14 @@
       "cluster": "Books",
       "status": "new",
       "summary": "Marc O. Stöckli's practical guide to moving boards from legally required bodies to vital sources of judgement, challenge, trust, and strategic value.",
-      "detail": "The book combines behavioural norms—beginner's mind, psychological safety, and trust—with board composition, conflicts, the chair as lightning rod, and a disciplined cycle before, during, and after meetings."
+      "detail": "The book combines behavioural norms—beginner's mind, psychological safety, and trust—with board composition, conflicts, the chair as lightning rod, and a disciplined cycle before, during, and after meetings.",
+      "keyIdeas": [
+        "A board creates value through the quality of its collective judgement, not through compliance theatre or ceremonial meetings.",
+        "Composition matters, but behaviour matters just as much: curiosity, candour, trust and psychological safety determine whether expertise can be used.",
+        "The chair shapes the conditions for productive challenge and acts as a lightning rod when interests or personalities collide.",
+        "Board effectiveness is a cycle spanning preparation, the meeting itself, follow-through and continuous reflection."
+      ],
+      "whyItMatters": "Useful as a practical diagnostic for any leadership team that is formally impressive but operationally weak: it connects governance structure with the human dynamics that make challenge constructive."
     },
     {
       "id": "artifact_emperor",
@@ -163,7 +177,14 @@
       "cluster": "Books",
       "status": "new",
       "summary": "Tarot archetype of authority, structure, stability, boundaries, and disciplined leadership.",
-      "detail": "Jim shared Biddy Tarot's interpretation of the fourth Major Arcana card.",
+      "detail": "Jim shared Biddy Tarot's interpretation of the fourth Major Arcana card: a figure of order, protection, disciplined authority and the structures that make stability possible.",
+      "keyIdeas": [
+        "Upright, The Emperor represents authority, leadership, structure, boundaries and the capacity to turn intention into order.",
+        "Its constructive form is protective and dependable: rules and systems create a stable platform for others.",
+        "Its shadow is rigidity—control becoming domination, certainty suppressing learning, or structure becoming an end in itself.",
+        "As a leadership prompt, the card asks where firmer boundaries are needed and where authority has become too inflexible."
+      ],
+      "whyItMatters": "A compact symbolic lens for leadership conversations: healthy authority supplies clarity and safety, while unhealthy authority confuses control with strength.",
       "url": "https://biddytarot.com/tarot-card-meanings/major-arcana/emperor/"
     },
     {
@@ -173,7 +194,14 @@
       "cluster": "Books",
       "status": "new",
       "summary": "Dave Eggers' 2013 dystopian novel about a dominant technology company whose pursuit of transparency erodes privacy, autonomy, and dissent.",
-      "detail": "A useful provocation about surveillance, platform power, and the seduction of frictionless participation.",
+      "detail": "Mae Holland joins the Circle, a powerful technology company combining search, social identity, payments and surveillance. What begins as convenience and belonging gradually becomes a system in which visibility is treated as virtue and privacy as guilt.",
+      "keyIdeas": [
+        "Convenience can become coercive when opting out carries social or professional punishment.",
+        "Radical transparency sounds democratic while concentrating power in the platform that owns the data and rules.",
+        "Participation metrics turn relationships, identity and even morality into performance.",
+        "The novel’s central warning is not only surveillance, but how willingly people trade autonomy for belonging, safety and frictionless service."
+      ],
+      "whyItMatters": "Still relevant to AI and platform governance: a system can be useful, popular and apparently benevolent while quietly eliminating the space required for privacy, dissent and independent judgement.",
       "url": "https://en.wikipedia.org/wiki/The_Circle_(Eggers_novel)"
     },
     {
@@ -183,7 +211,14 @@
       "cluster": "Books",
       "status": "new",
       "summary": "Harry Frankfurt's philosophical essay distinguishing bullshit from lying: the liar tracks truth in order to conceal it; the bullshitter is indifferent to truth.",
-      "detail": "A compact lens for analysing rhetoric, institutional language, and claims designed primarily to create an impression.",
+      "detail": "Harry Frankfurt’s short philosophical essay argues that bullshit is not simply falsehood. A liar must respect the truth enough to hide it; the bullshitter is focused instead on producing an impression and is indifferent to whether the claim is true.",
+      "keyIdeas": [
+        "Lying and bullshit are different relationships to truth: concealment versus indifference.",
+        "Bullshit grows where people are expected to speak with authority about matters beyond their knowledge or evidence.",
+        "The speaker’s real subject is often the speaker—the image of competence, sincerity or certainty they want to project.",
+        "Because it weakens concern for truth itself, bullshit may be more corrosive than an identifiable lie."
+      ],
+      "whyItMatters": "A precise tool for reading corporate language, political rhetoric and AI-generated confidence: ask whether the claim is trying to describe reality or merely engineer an impression.",
       "url": "https://www.csc2.ncsu.edu/faculty/mpsingh/local/Social/f24/wrap/readings/Harry-Frankfurt-On-Bullshit-1988.pdf"
     },
     {
@@ -193,7 +228,14 @@
       "cluster": "Books",
       "status": "new",
       "summary": "Carlo M. Cipolla's satirical model of stupidity: people routinely underestimate its prevalence and destructive power, especially when actions harm others without benefiting the actor.",
-      "detail": "A humorous but sharp framework for thinking about irrational harm in organisations and society.",
+      "detail": "Carlo M. Cipolla presents five mock-serious laws and a two-axis model of human behaviour. The dangerous category is the stupid person: someone whose action creates losses for others while producing no gain—and often a loss—for themselves.",
+      "keyIdeas": [
+        "We consistently underestimate how many stupid people are active in any population or institution.",
+        "Stupidity is independent of status, education, wealth or profession; competence in one domain offers no immunity.",
+        "Cipolla maps behaviour by gains and losses to self and others: intelligent, bandit, helpless and stupid.",
+        "Stupid actors are uniquely dangerous because their behaviour is irrational, unpredictable and difficult to bargain with."
+      ],
+      "whyItMatters": "A funny but memorable risk lens: systems should not assume every harmful act has a rational incentive. Robust organisations must also withstand behaviour that destroys value for everyone.",
       "url": "https://ia801609.us.archive.org/29/items/kaufman-s-clinical-neurology-for-psychiatrists-pdfdrive/The%20Basic%20Laws%20of%20Human%20Stupidity%20%28Carlo%20M.%20Cipolla%29%20%28Z-Library%29.pdf"
     },
     {
@@ -203,7 +245,14 @@
       "cluster": "Books",
       "status": "new",
       "summary": "The 1965 British adventure comedy about an eccentric international air race from London to Paris in the pioneering era of aviation.",
-      "detail": "Jim shared a link to the film—a playful celebration of invention, rivalry, national character, and glorious mechanical chaos.",
+      "detail": "Set in 1910, the film follows an eccentric international field of aviators competing in a London-to-Paris air race. Their fragile machines, rivalries, romances and national stereotypes turn technological progress into elaborate comic chaos.",
+      "keyIdeas": [
+        "Early aviation appears as both engineering breakthrough and magnificent improvisation.",
+        "The race becomes a theatre of national character, personal vanity, courage, cheating and accidental cooperation.",
+        "Its pleasure lies in physical spectacle: eccentric aircraft, practical stunts and machines that only barely work.",
+        "Beneath the comedy is affection for pioneers who accept absurd risk before a technology becomes ordinary."
+      ],
+      "whyItMatters": "A playful companion to innovation discussions: every mature system once passed through a stage of unreliable prototypes, colourful characters and brave experiments.",
       "url": "https://ok.ru/video/6496174017084"
     },
     {

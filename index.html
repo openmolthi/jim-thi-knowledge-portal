@@ -689,7 +689,7 @@ function renderCards() {
   cards.innerHTML = "";
   const q = document.getElementById("search").value.trim().toLowerCase();
   const nodes = state.nodes.filter(node => {
-    if (node.type === "portal") return false;
+    if (node.type !== "artifact") return false;
     if (state.typeFilter !== "all" && node.type !== state.typeFilter) return false;
     return !q || node.searchBlob.includes(q);
   });
